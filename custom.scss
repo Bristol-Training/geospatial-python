@@ -1,0 +1,343 @@
+/*-- scss:defaults --*/
+// Fixed JGI colours (the cosmo theme would otherwise supply its own blue).
+// Keep in step with the palette in _brand.yml (University of Bristol brand: red, grey).
+$jgi-red: #a6192e;
+$pale: #e5e6e5;
+
+/*-- scss:rules --*/
+// ---- Website pages ----
+// Navbar logo: Quarto's default caps it at 48px, too small to read the text
+.navbar .navbar-logo { max-height: 64px; }
+
+.callout.callout-style-default .callout-body { font-size: 1rem; }
+
+.cell-output {
+  border-left: 0.25em solid $jgi-red;
+  padding-left: 0.7em;
+}
+
+pre.sourceCode.bash { background-color: lightgray; }
+
+.code-with-filename .code-with-filename-file {
+  background-color: lightslategray;
+  &, & * {
+    color: rgb(230, 230, 230) !important;
+    font-weight: normal !important;
+  }
+}
+
+/* question that opens each section */
+.lead-question {
+  display: block;
+  font-size: 1.35rem;
+  font-style: italic;
+  color: $jgi-red;
+  border-left: 0.3em solid $jgi-red;
+  padding-left: 0.6em;
+  margin: 0.5em 0 1em 0;
+}
+
+/* flow diagrams: a -> b -> c */
+.flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  margin: 1em 0;
+}
+.flow .step {
+  background: $jgi-red;
+  color: #fff;
+  border-radius: 0.3em;
+  padding: 0.25em 0.6em;
+  font-family: var(--bs-font-monospace);
+  font-size: 0.9rem;
+}
+.flow .step.light {
+  background: $pale;
+  color: $jgi-red;
+  border: 2px solid $jgi-red;
+}
+.flow .arrow { color: $jgi-red; font-weight: 700; font-size: 1.2rem; }
+
+/* do / don't */
+.good, .bad {
+  border-radius: 0.3em;
+  padding: 0.3em 0.7em;
+  margin: 0.4em 0;
+}
+.good { background: #e6f4ea; border-left: 0.3em solid #1e8e3e; }
+.bad { background: #fce8e6; border-left: 0.3em solid #c5221f; }
+
+/* cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6em;
+  margin: 1em 0;
+}
+.card {
+  background: $pale;
+  border: none;
+  border-top: 0.25em solid $jgi-red;
+  border-radius: 0.3em;
+  padding: 0.5em 0.7em;
+}
+.card > p:first-child > strong:first-child { display: block; color: $jgi-red; }
+
+/* home page: materials box on the right on wide screens, on top on narrow screens */
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+@media (min-width: 992px) {
+  .home-layout {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    grid-template-areas: "main side";
+    column-gap: 2.5rem;
+  }
+  .home-layout > .home-main { grid-area: main; }
+  .home-layout > .course-sidebar { grid-area: side; align-self: start; }
+}
+/* buttons: one per row on phones and in the desktop side column, two per row on tablets */
+.sidebar-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75em;
+}
+.course-sidebar .sidebar-buttons .btn { margin-bottom: 0; }
+
+/* boxed side column on the home page */
+.course-sidebar {
+  background: $pale;
+  border: 2px solid $jgi-red;
+  border-radius: 0.6em;
+  padding: 1.25em 1.5em;
+}
+.course-sidebar h3 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: $jgi-red;
+}
+.course-sidebar h3:not(:first-child) { margin-top: 1.5em; }
+.course-sidebar .btn {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.75em;
+  padding: 0.75em 1em;
+}
+/* buttons in the brand red */
+.btn-primary {
+  background-color: $jgi-red;
+  border-color: $jgi-red;
+  color: #fff;
+  &:hover, &:focus, &:active {
+    background-color: #7d1222;
+    border-color: #7d1222;
+    color: #fff;
+  }
+}
+a { color: $jgi-red; }
+a.btn { color: #fff; }
+.course-sidebar p { margin-bottom: 0; }
+.course-sidebar ul { padding-left: 1.2em; margin-bottom: 0; }
+.course-sidebar li { margin-bottom: 0.4em; }
+
+.big-statement {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: $jgi-red;
+  text-align: center;
+  margin: 1em 0;
+}
+
+
+// Right-hand "Contents": make the entry for the section you are reading stand out
+#TOC .nav-link.active { font-weight: 700; border-left-width: 3px; }
+
+
+// ---- Notes page: clear breaks between sections ----
+// (scoped by `body-classes: notes-page` in notes.qmd)
+
+/* each main section starts like a new chapter: space, a thick red rule, and a "Section N" label */
+.notes-page section.level1 ~ section.level1 {
+  margin-top: 4.5rem;
+  padding-top: 2rem;
+  border-top: 0.35rem solid $jgi-red;
+}
+.notes-page section.level1 > h1 {
+  color: $jgi-red;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+}
+.notes-page section.level1 > h1 .header-section-number {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #595959;
+  margin-bottom: 0.3em;
+  &::before { content: "Section "; }
+}
+
+/* small "time and activities" line under each section's question */
+.section-meta {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #444;
+  background: $pale;
+  border-radius: 1em;
+  padding: 0.2em 0.9em;
+}
+
+/* the "Try it yourself" activity sits in its own shaded panel */
+.try-it {
+  background: #fff;
+  border: 2px solid darken($pale, 20%);
+  border-top: 0.45rem solid $jgi-red;
+  border-radius: 0.5em;
+  padding: 0.25rem 1.25rem 0.5rem;
+  margin: 2.5rem 0 1.5rem;
+}
+.try-it > h2 { color: $jgi-red; margin-top: 1rem; }
+/* each activity's name, and the example's label in "How to read this document" */
+.try-it > h3, .try-it .try-it-title {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+.try-it .callout { margin-bottom: 1rem; }
+
+// Collapsible "How to read this document" guide
+details.how-to-read { margin: 1.5rem 0; }
+details.how-to-read > summary { cursor: pointer; padding: 0.25em 0; }
+details.how-to-read > summary:focus-visible { outline: 3px solid $jgi-red; outline-offset: 3px; }
+details.how-to-read > summary h3 { display: inline; margin: 0; }
+details.how-to-read[open] > summary { margin-bottom: 0.75em; }
+
+// ---- Slides (revealjs) ----
+.reveal { --jgi-red: #a6192e; --jgi-pale: #e5e6e5; }
+.reveal .slide-logo { max-height: 4.5rem !important; }
+.reveal .footer { font-size: 0.45em; }
+.reveal table { font-size: 0.7em; }
+.reveal .callout.callout-style-default .callout-body { font-size: 0.8em; }
+.reveal .cell-output { border-left: 0.25em solid var(--jgi-red); padding-left: 0.7em; }
+
+/* activity slides: a red tag marks "Together" and "Live demo" (instructor-led), an outlined tag marks "Your turn", a green tag marks "Answer" */
+.reveal .slides section.demo-slide .demo-tag { display: inline-block; background: var(--jgi-red); color: #fff; border-radius: 0.3em; padding: 0.15em 0.8em; font-size: 0.8em; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 0.6em; }
+.reveal .slides section.demo-slide .your-turn-tag { display: inline-block; background: #fff; color: var(--jgi-red); border: 2px solid var(--jgi-red); border-radius: 0.3em; padding: 0.1em 0.8em; font-size: 0.8em; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 0.6em; }
+.reveal .slides section.demo-slide .answer-tag { display: inline-block; background: #1b6e34; color: #fff; border-radius: 0.3em; padding: 0.15em 0.8em; font-size: 0.8em; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 0.6em; }
+.reveal .slides section.demo-slide .demo-meta { color: #555; font-size: 0.7em; }
+
+/* section dividers: white text on the primary colour */
+.reveal .slides section.section-divider h1,
+.reveal .slides section.section-divider h2 { color: #fff !important; }
+.reveal .section-number { display: block; font-size: 0.5em; letter-spacing: 0.2em; margin-bottom: 0.3em; }
+.reveal .section-question { color: #fff; font-style: italic; margin-top: 0.8em; }
+
+.reveal .big { font-size: 1.7em; font-weight: 700; line-height: 1.2; color: var(--jgi-red); }
+.reveal .medium { font-size: 1.2em; }
+.reveal .small { font-size: 0.75em; }
+.reveal .muted { color: #595959; font-size: 0.75em; }
+.reveal .center { text-align: center; }
+.reveal .your-turn { font-size: 0.85em; background: var(--jgi-pale); border-radius: 0.3em; padding: 0.5em 0.8em; }
+
+.reveal .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5em; margin-top: 0.5em; }
+.reveal .card { background: var(--jgi-pale); border-top: 0.25em solid var(--jgi-red); border-radius: 0.3em; padding: 0.4em 0.6em; font-size: 0.7em; text-align: left; }
+.reveal .card > p:first-child > strong:first-child { display: block; color: var(--jgi-red); font-size: 1.15em; margin-bottom: 0.2em; }
+/* any cards slide as a 2x2 grid with room for a sentence per card */
+.reveal .cards.grid2 { grid-template-columns: repeat(2, 1fr); gap: 0.6em; }
+.reveal .cards.grid2 .card { font-size: 0.8em; }
+
+/* course overview: 2x2 grid of cards, each with a question and a hands-on line */
+.reveal .cards.journey { grid-template-columns: repeat(2, 1fr); gap: 0.4em; margin-top: 0.2em; }
+.reveal .cards.journey .card { font-size: 0.5em; padding: 0.3em 0.5em; }
+.reveal .cards.journey .card em { display: block; margin-bottom: 0.3em; color: #555; }
+.reveal .cards.journey .card .hands-on { display: block; margin-top: 0.4em; padding-top: 0.3em; border-top: 1px solid var(--jgi-red); }
+
+.reveal .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.3em; margin: 0.6em 0; }
+.reveal .flow .step {
+  display: inline-block;          /* ensures the box forms one unified container */
+  text-align: center;             /* centers text over the two lines */
+  line-height: 1.25;              /* keeps the two lines close together */
+  background: var(--jgi-red);
+  color: #fff;
+  border-radius: 0.3em;
+  padding: 0.3em 0.6em;
+  font-size: 0.75em;
+  font-family: monospace;
+}
+.reveal .flow .step.light { background: var(--jgi-pale); color: var(--jgi-red); border: 2px solid var(--jgi-red); }
+.reveal .flow .arrow { color: var(--jgi-red); font-size: 1.2em; font-weight: 700; }
+/* room between rows if a flow wraps */
+.reveal .flow { row-gap: 0.8em; }
+
+.reveal .good, .reveal .bad { border-radius: 0.3em; padding: 0.3em 0.6em; margin: 0.3em 0; font-size: 0.8em; }
+.reveal .good { background: #e6f4ea; border-left: 0.3em solid #1e8e3e; }
+.reveal .bad { background: #fce8e6; border-left: 0.3em solid #c5221f; }
+
+/* a centred comparison table: header row in the primary colour, row labels in a pale column */
+/* size the table to its content (pandoc sets each column to a fixed percentage width) */
+.reveal .doc-table table { width: auto; max-width: 95%; table-layout: auto; border-collapse: collapse; font-size: 0.6em; margin: 0.2em auto; }
+.reveal .doc-table col { width: auto !important; }
+.reveal .doc-table th, .reveal .doc-table td { text-align: center; vertical-align: middle; padding: 0.3em 0.5em; border: 1px solid #ddd; line-height: 1.2; }
+.reveal .doc-table thead th { background: var(--jgi-red); color: #fff; border-color: var(--jgi-red); }
+.reveal .doc-table tbody td:first-child { background: var(--jgi-pale); color: var(--jgi-red); font-weight: 700; white-space: nowrap; }
+.reveal .doc-table tbody tr:nth-child(even) td:not(:first-child) { background: #fafafa; }
+
+.reveal table.mini { font-size: 0.55em; border-collapse: collapse; margin: 0.3em auto; }
+.reveal table.mini td, .reveal table.mini th { border: 1px solid var(--jgi-red); padding: 0.15em 0.5em; }
+.reveal table.mini th { background: var(--jgi-red); color: #fff; }
+
+
+/* code blocks: no scrolling (a scrolling box is hard to use on a slide), and a size that fits the width */
+.reveal pre { width: 100%; box-shadow: none; font-size: 0.5em; }
+.reveal pre code { max-height: none; overflow: visible; line-height: 1.35; }
+.reveal div.sourceCode { overflow: visible; }
+
+/* paragraphs inside cards sit close together, so each item reads as one line */
+.reveal .card p { margin: 0.25em 0; }
+.reveal .cards.checklist .card { font-size: 0.65em; padding: 0.3em 0.6em; }
+.reveal .cards.checklist .card p { margin: 0.2em 0; }
+
+/* keep the red titles on the coloured activity slides */
+.reveal .slides section.demo-slide h2 { color: var(--jgi-red); }
+
+/* the footer link takes the footer's colour, so it is readable on the coloured slides */
+.reveal .footer a { color: inherit; text-decoration: underline; }
+
+// ---- Home page: slides embedded at the top of the notes ----
+.slides-embed {
+  width: 100%;
+  max-width: 760px;  // keep the slides from dominating the page on wide screens
+  aspect-ratio: 16 / 9;
+  margin: 1em auto 0.5em auto;
+  border: 0.2em solid $jgi-red;
+  border-radius: 0.4em;
+  overflow: hidden;
+  background: #fff;
+}
+.slides-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.hub-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+.hub-btn {
+  background: $jgi-red;
+  color: #fff;
+  border: none;
+  &:hover, &:focus { background: #7d1222; color: #fff; }
+}

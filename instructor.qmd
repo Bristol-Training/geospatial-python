@@ -1,0 +1,203 @@
+---
+title: "Instructor notes"
+format: html
+number-sections: false
+---
+
+[← Back to the course notes](index.qmd)
+
+# At a glance {.unnumbered}
+
+**How it runs:** live coding in Google Colab. For each section: a short slide, then **Together** (you live-code, attendees type along in their own copy of the notebook), then **Your turn** (an exercise on their own), then **Answer** (you show it). Section 5 is a discussion with no new code. The steps for each part are in the **speaker notes** of its slide (press **S** in the deck). The notes have all the code and every answer.
+
+| # | Section | Min | Objective | Together (you) | Your turn |
+|---|---|---|---|---|---|
+| | Introduction and setup | 15 | | Open the notebook, run the setup cells | |
+| 1 | Location data | 30 | 1, 2 | Read the data, CRS, `set_crs()` and `to_crs()` | Where is pump 0? |
+| 2 | Making maps | 35 | 3 | Layers, background map, `explore()` | An interactive map |
+| | Break | 10 | | | |
+| 3 | The nearest pump | 35 | 4 | `sjoin_nearest()`, deaths per pump | Deaths within 100 metres |
+| 4 | Pump catchments | 25 | 5 | Voronoi polygons, `sjoin()` | A map of catchments |
+| 5 | What the map cannot tell us | 20 | 6 | The exceptions and limits | Question the map |
+| | Summary | 10 | | Recap and objectives | |
+
+**By the end, attendees can:**
+
+1. Load location data into a GeoDataFrame, and describe how it differs from a pandas DataFrame.
+2. Explain what a coordinate reference system (CRS) is, and check and change the CRS of a dataset.
+3. Make a static map with a background map, and an interactive map.
+4. Join datasets by location, for example to find the nearest water pump to each address.
+5. Divide an area into catchments around points, and summarise data within each one.
+6. Describe what a map can and cannot tell us, using Snow's map as an example.
+
+## The numbers {.unnumbered}
+
+For checking attendees' answers. `tests/check_notes.py` recalculates them from the data.
+
+| | Value |
+|---|---|
+| Addresses (rows in `deaths`) | 250 |
+| Deaths (sum of `Count`) | 489 |
+| Most deaths at one address | 15, about 17 m from the Broad Street pump |
+| Pumps | 8 (no attributes in the file; pump 0 is Broad Street) |
+| Pump 0 in latitude, longitude | about 51.5133, -0.1367 (Broadwick Street) |
+| Deaths nearest each pump | 0: 340, 1: 65, 4: 40, 5: 27, 7: 12, 2: 5, 3: 0, 6: 0 |
+| Broad Street's share | 340 of 489, 69.5% |
+| Distance to nearest pump | mean about 105 m, maximum about 316 m |
+| Deaths within 100 m of Broad Street | 196 (40.1%) |
+
+## Before you start {.unnumbered}
+
+- Run `uv run python tests/check_notes.py` (see the README). It runs the code in the notes and checks the numbers above.
+- In a fresh Colab session, within a week of the course, run the notes' code from top to bottom, and check that the maps appear. Check `gpd.__version__`: the notes need 1.0 or later, for `voronoi_polygons()`.
+- Check that [johnsnow.rtwilson.com/data/SnowGIS_SHP.zip](https://johnsnow.rtwilson.com/data/SnowGIS_SHP.zip) still downloads.
+- Have a **backup copy** of `SnowGIS_SHP.zip` in your own Google Drive, in case the site is down on the day. Only share it with attendees if the site is down, as the data has no stated licence.
+- Have the home page link ready to paste in the chat.
+- Open the slides and the notes in separate tabs.
+
+## Ground rules {.unnumbered}
+
+- **Type along slowly.** Attendees are new to geospatial, and some are new to pandas. Say each line out loud as you type it.
+- **Never debug live for long.** If something fails, say so, paste the working code from the notes, and move on.
+- The course is **online**: every *Your turn* is done on their own, and answers go in the chat.
+- Wait for a thumbs up in the chat after setup and after each *Your turn*.
+- If running late, skip the **optional extra** (Snow's map) and the **Extra** steps in the exercises first, then shorten the section 5 discussion, not a coding section.
+
+# Introduction and setup (15 min)
+
+**Together:** open the notebook from the home page, save a copy in Drive, run the two setup cells.
+
+**Checkpoints:** by 2 min the mission and how today works; by 5 the story; by 15 everyone has the data.
+
+**Key messages**
+
+- We will recreate a famous piece of public health detective work.
+- Colab runs in the browser. Nothing to install.
+
+**Don't forget**
+
+- Keep the story to 3 minutes. The rest of it comes in section 5.
+- Show the folder icon in Colab, and the `SnowGIS_SHP` folder.
+
+**Watch out for:** Colab's "This notebook was not authored by Google" warning: click **Run anyway**. People who run the second cell before the first. If the download fails for everyone, share the backup copy and have them upload it with the folder icon.
+
+# 1. Location data (30 min)
+
+**Together:** read both files; `head()`, `type()`, `len()`, `Count.sum()`, `value_counts()`; add `pump_id`; `deaths.plot()`; `.crs`; `set_crs(27700, allow_override=True)`; `to_crs(4326)`; distance in both CRSs.
+
+**Your turn:** *Where is pump 0?* **Answer:** about 51.5133, -0.1367, Broadwick Street (Broad Street in 1854).
+
+**Checkpoints:** by 10 min the data is loaded and explored; by 20 CRS done; by 25 *Your turn*; finish at 30.
+
+**Key messages**
+
+- A GeoDataFrame is a DataFrame with a geometry column. All of pandas still works.
+- A CRS says what the numbers mean. `set_crs()` labels, `to_crs()` converts.
+- Measure distances in metres (British National Grid), not degrees.
+
+**Don't forget**
+
+- Ask "what are these numbers?" before showing `.crs`.
+- Show the warning geopandas gives when measuring in degrees.
+- Point out that `POINT (x y)` puts longitude first.
+
+**Watch out for:** latitude and longitude swapped in the web map (they land in the Indian Ocean). People expecting the pumps to have names: the file has none, which is why we add `pump_id`.
+
+# 2. Making maps (35 min)
+
+**Together:** build the static map a step at a time (deaths, size by `Count`, pumps with `ax=ax`), add a background map with contextily, then `explore()` with two layers.
+
+**Your turn:** *An interactive map*. **Answer:** the address with 15 deaths is about 17 m from the Broad Street pump.
+
+**Checkpoints:** by 12 min the layered map; by 18 the background map; by 25 `explore()`; by 32 *Your turn*; finish at 35.
+
+**Key messages**
+
+- Maps are built in layers. `ax=ax` draws on the same map.
+- Size and colour can show values from the table.
+- `.plot()` for static maps, `.explore()` for interactive ones.
+- Keep the map attribution.
+
+**Don't forget**
+
+- Compare the sized dots to Snow's stacked bars.
+- If time, show Snow's original map as the background (the optional extra in the notes). It is a good "wow" moment.
+
+**Watch out for:** a background map in the wrong place, usually because `crs=deaths.crs` is missing. People trying other `cx.providers`: OpenStreetMap's own tiles return "Access blocked" images to contextily, and CartoDB now needs an API key.
+
+# Break (10 min)
+
+About 1 hour 20 minutes in. Colab can disconnect if left idle. If it does, attendees click **Runtime → Run before** in the first cell of section 3, or rerun the notebook from the top.
+
+# 3. The nearest pump (35 min)
+
+**Together:** `sjoin_nearest(pumps, distance_col="distance")`; explain the new columns; `groupby("pump_id")["Count"].sum()`; percentages; `distance.describe()`; map coloured by `pump_id` with `categorical=True`.
+
+**Your turn:** *Deaths within 100 metres*. **Answer:** 196 deaths, 40%.
+
+**Checkpoints:** by 10 min the join; by 20 deaths per pump; by 25 the map; by 32 *Your turn*; finish at 35.
+
+**Key messages**
+
+- A spatial join matches rows by location.
+- After the join, it is a normal table: use pandas.
+- 340 of 489 deaths (70%) were nearest the Broad Street pump.
+- Straight-line distance is not walking distance (back to this in section 5).
+
+**Don't forget**
+
+- Explain `groupby()` slowly: some attendees will not have used pandas.
+- Point out that pumps 3 and 6 are missing from the groupby result, not zero.
+
+**Watch out for:** `index_right` confusing people: it is the row of the pump, added by every spatial join. In the exercise, using `<` or `<=` gives the same answer here.
+
+# 4. Pump catchments (25 min)
+
+**Together:** the study area box, `voronoi_polygons()`, label with `sjoin(predicate="contains")`, `clip()`, plot; count deaths with `sjoin()`.
+
+**Your turn:** *A map of catchments*. **Answer:** pumps 3 and 6 had no deaths.
+
+**Checkpoints:** by 10 min the catchments; by 15 deaths per catchment; by 22 *Your turn*; finish at 25.
+
+**Key messages**
+
+- Each Voronoi polygon is the area nearest one pump.
+- The polygons are not in the order of the pumps, so a spatial join labels them.
+- The totals match section 3, by definition. The polygons show the areas.
+- A map shaded by a value per area is a choropleth.
+
+**Don't forget**
+
+- Ask "why are the totals the same?" and wait for answers in the chat.
+- Mention that the same method is used today, for example for the nearest GP surgery.
+
+**Watch out for:** an `AttributeError` for `voronoi_polygons`: the geopandas version is older than 1.0 (see *Before you start*). Running the exercise's `catchments["deaths"]` line before the `totals` line.
+
+# 5. What the map cannot tell us (20 min)
+
+**Together:** the exceptions (straight lines, the brewery, the Hampstead widow, the first case), then the limits of the data.
+
+**Your turn:** *Question the map*, in the chat.
+
+**Checkpoints:** by 7 min the exceptions; by 12 the limits; by 17 *Your turn*; finish at 20.
+
+**Key messages**
+
+- A map shows where deaths were recorded, not why they happened.
+- Snow's case was persuasive because the map fitted with other evidence.
+- The outbreak was already slowing when the handle was removed.
+- Ask who and what is missing from any map.
+
+**Don't forget**
+
+- Draw out the point about **rates**: without the population at each address, a crowded street looks worse.
+- Link to today: health data is released for areas, not addresses, to protect privacy, and the boundaries change the pattern.
+
+**If running late:** take one or two answers from the chat, not more.
+
+# Summary (10 min)
+
+- Go through the summary table on the slides.
+- Go back to the six objectives and tick them off.
+- Point to the next steps, and remind people the notes have everything.
+- Ask people to fill in the feedback form.

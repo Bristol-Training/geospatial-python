@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5de16f5e46225c21e2daa90d340bf64f.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.11.9">
+
+  <meta name="author" content="Jean Golding Institute">
+  <title>Geospatial Python</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-11e1de01907ba1dcdd51838441f6f690.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Geospatial Python</h1>
+  <p class="subtitle">Mapping John Snow’s cholera outbreak</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Jean Golding Institute
+</div>
+</div>
+</div>
+
+</section>
+<section id="todays-mission" class="slide level2 center">
+<h2>Today’s mission</h2>
+<div class="big center">
+<p>Find the source of<br>a cholera outbreak,<br>with a map.</p>
+</div>
+<aside class="notes">
+<p>Welcome and housekeeping (break halfway, chat for questions). The notes have everything in detail; the slides and live coding carry the session.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-today-works" class="slide level2">
+<h2>How today works</h2>
+<div class="medium">
+<p>We code. You code.</p>
+</div>
+<div class="small">
+<ul>
+<li>We work in <strong>Google Colab</strong>: nothing to install</li>
+<li>Type along in <strong>your own copy</strong> of the notebook: don’t just watch</li>
+<li>Each section ends with a short <strong>“Your turn”</strong> exercise</li>
+<li>Errors are normal. Read them out loud!</li>
+<li>Stuck? <strong>Type in the chat</strong></li>
+<li>The <strong>notes</strong> have all the code, and the answers</li>
+</ul>
+</div>
+</section>
+<section id="the-journey" class="slide level2">
+<h2>The journey</h2>
+<div class="cards journey">
+<div class="card fragment">
+<p><strong>1 · Location data</strong> <em>What do the numbers mean?</em> GeoDataFrames and coordinate reference systems <span class="hands-on">Your turn: where is pump 0?</span></p>
+</div>
+<div class="card fragment">
+<p><strong>2 · Making maps</strong> <em>How do we show it?</em> Layers, background maps and interactive maps <span class="hands-on">Your turn: an interactive map</span></p>
+</div>
+<div class="card fragment">
+<p><strong>3 · The nearest pump</strong> <em>Which pump was closest?</em> Spatial joins and distances <span class="hands-on">Your turn: deaths within 100 metres</span></p>
+</div>
+<div class="card fragment">
+<p><strong>4 · Pump catchments</strong> <em>Which area did each pump serve?</em> Voronoi polygons and choropleths <span class="hands-on">Your turn: a map of catchments</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Click through the cards. Section 5 is a discussion, with no new code.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="by-the-end-you-will-be-able-to" class="slide level2">
+<h2>By the end, you will be able to</h2>
+<div class="small">
+<ol type="1">
+<li><strong>Load</strong> location data into a GeoDataFrame, and describe how it differs from a pandas DataFrame</li>
+<li><strong>Explain</strong> what a coordinate reference system (CRS) is, and <strong>check and change</strong> it</li>
+<li><strong>Make</strong> a static map with a background map, and an interactive map</li>
+<li><strong>Join</strong> datasets by location, for example to find the nearest pump to each address</li>
+<li><strong>Divide</strong> an area into catchments around points, and <strong>summarise</strong> data within each one</li>
+<li><strong>Describe</strong> what a map can and cannot tell us</li>
+</ol>
+</div>
+<aside class="notes">
+<p>Objectives 1 and 2 are section 1, 3 is section 2, 4 is section 3, 5 is section 4 and 6 is section 5. We come back to this list at the end.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="soho-1854" class="slide level2">
+<h2>Soho, 1854</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="small">
+<ul>
+<li>End of August 1854: cholera breaks out in Soho, London</li>
+<li>Hundreds die within days</li>
+<li>Most doctors believe in <strong>miasma</strong>: disease spread by “bad air”</li>
+<li>John Snow thinks it spreads through <strong>water</strong></li>
+<li>He visits the households of the dead: most drank from the <strong>Broad Street pump</strong></li>
+<li>The pump handle is removed on <strong>8 September 1854</strong></li>
+</ul>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="big">
+<p>Today we rebuild his map.</p>
+</div>
+</div></div>
+<aside class="notes">
+<p>Keep this short (3 min). Save the brewery, the Hampstead widow and Whitehead for section 5. Sources are linked in the notes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="getting-set-up" class="slide level2 demo-slide">
+<h2>Getting set up</h2>
+<p><span class="demo-tag">Together</span> <span class="demo-meta">10 min</span></p>
+<ol type="1">
+<li>Open the notebook from the course home page: <strong>Open the notebook in Colab</strong></li>
+<li><strong>File → Save a copy in Drive</strong></li>
+<li>Run the first two cells (<strong>Shift + Enter</strong>)</li>
+</ol>
+<div id="fb6ee71e" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install <span class="op">--</span>quiet <span class="st">"geopandas&gt;=1.0"</span> contextily folium mapclassify</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="636d4937" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb2-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb2-3"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://johnsnow.rtwilson.com/data/SnowGIS_SHP.zip"</span></span>
+<span id="cb2-5"><a aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(url, <span class="st">"SnowGIS_SHP.zip"</span>)</span>
+<span id="cb2-6"><a aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> zipfile.ZipFile(<span class="st">"SnowGIS_SHP.zip"</span>) <span class="im">as</span> zip_file:</span>
+<span id="cb2-7"><a aria-hidden="true" tabindex="-1"></a>    zip_file.extractall()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<aside class="notes">
+<p>Share the home page link in the chat, and wait for thumbs up before moving on. Show the SnowGIS_SHP folder (folder icon on the left). Colab’s “not authored by Google” warning: click Run anyway. If the download fails for everyone, use the backup copy (see the instructor notes).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section>
+<section id="location-data" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1><span class="section-number">01</span> Location data</h1>
+<p><span class="section-question">How is location data stored, and what do the numbers mean?</span></p>
+</section>
+<section id="reading-the-data" class="slide level2 demo-slide">
+<h2>Reading the data</h2>
+<p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
+<div id="5b1a6d56" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb3-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" tabindex="-1"></a>deaths <span class="op">=</span> gpd.read_file(<span class="st">"SnowGIS_SHP/Cholera_Deaths.shp"</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" tabindex="-1"></a>pumps <span class="op">=</span> gpd.read_file(<span class="st">"SnowGIS_SHP/Pumps.shp"</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" tabindex="-1"></a>deaths.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cards">
+<div class="card">
+<p><strong>GeoDataFrame</strong> A pandas DataFrame with a <code>geometry</code> column</p>
+</div>
+<div class="card">
+<p><strong>Shapefile</strong> Several files that travel together: <code>.shp</code>, <code>.dbf</code>, <code>.shx</code>, <code>.prj</code></p>
+</div>
+</div>
+<aside class="notes">
+<p>Live code: read both files, deaths.head(), type(deaths), len(deaths) and Count.sum() (250 and 489), value_counts(). Then pumps: 8 rows, geometry only, so add pump_id. deaths.plot(), and ask: what are the numbers on the axes?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-do-the-numbers-mean" class="slide level2">
+<h2>What do the numbers mean?</h2>
+<div id="ff52ab56" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" tabindex="-1"></a>deaths.crs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="doc-table">
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>CRS</th>
+<th>EPSG</th>
+<th>Units</th>
+<th>Good for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>British National Grid</td>
+<td>27700</td>
+<td>metres</td>
+<td>Distances and areas in Great Britain</td>
+</tr>
+<tr class="even">
+<td>WGS 84 (latitude, longitude)</td>
+<td>4326</td>
+<td>degrees</td>
+<td>GPS, sharing data, web maps</td>
+</tr>
+</tbody>
+</table>
+</div>
+<aside class="notes">
+<p>A coordinate reference system says where the numbers are measured from and in what units. British National Grid: metres east and north of a point south-west of the Isles of Scilly. The first address is about 529 km east and 181 km north.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="set_crs-or-to_crs" class="slide level2">
+<h2>set_crs() or to_crs()?</h2>
+<div id="072e516b" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Label the data with its CRS: the numbers do not change</span></span>
+<span id="cb5-2"><a aria-hidden="true" tabindex="-1"></a>deaths <span class="op">=</span> deaths.set_crs(<span class="dv">27700</span>, allow_override<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-3"><a aria-hidden="true" tabindex="-1"></a>pumps <span class="op">=</span> pumps.set_crs(<span class="dv">27700</span>, allow_override<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to latitude and longitude: the numbers change</span></span>
+<span id="cb5-6"><a aria-hidden="true" tabindex="-1"></a>deaths_latlon <span class="op">=</span> deaths.to_crs(<span class="dv">4326</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="good">
+<p>✔ <code>set_crs()</code> <strong>labels</strong>: use it when the CRS is missing or wrong</p>
+</div>
+<div class="good">
+<p>✔ <code>to_crs()</code> <strong>converts</strong>: use it to change CRS</p>
+</div>
+<div class="bad">
+<p>✘ Measuring distances in latitude and longitude: the answer is in degrees</p>
+</div>
+<aside class="notes">
+<p>Live code the distance from each death to pump 0 in both CRSs, and show the warning geopandas gives for degrees. One degree of longitude is about 69 km in London, and about 111 km at the equator. Also note: POINT (x y) puts longitude first.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-is-pump-0" class="slide level2 demo-slide">
+<h2>Where is pump 0?</h2>
+<p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">5 min</span></p>
+<ol type="1">
+<li>Convert <code>pumps</code> to latitude and longitude</li>
+<li>Find the latitude and longitude of pump 0 (the first row)</li>
+<li>Paste them into Google Maps or OpenStreetMap as <code>latitude, longitude</code>. <strong>Which street is it on?</strong></li>
+</ol>
+<div class="muted">
+<p>Hint: <code>.geometry.y</code> and <code>.geometry.x</code>. Exercise 1 in the notes.</p>
+</div>
+<aside class="notes">
+<p>Ask people to post the street name in the chat. The Indian Ocean means latitude and longitude are swapped.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pump-0-is-the-broad-street-pump" class="slide level2 demo-slide">
+<h2>Pump 0 is the Broad Street pump</h2>
+<p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
+<div id="fef8b51d" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" tabindex="-1"></a>pumps_latlon <span class="op">=</span> pumps.to_crs(<span class="dv">4326</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" tabindex="-1"></a>pumps_latlon.geometry.y.iloc[<span class="dv">0</span>], pumps_latlon.geometry.x.iloc[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="medium">
+<p>About <strong>51.5133, -0.1367</strong>: Broadwick Street, called Broad Street in 1854</p>
+</div>
+<aside class="notes">
+<p>A replica pump stands on Broadwick Street today. From now on, pump 0 is “Broad Street”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="making-maps" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1><span class="section-number">02</span> Making maps</h1>
+<p><span class="section-question">How do we turn a table of points into a map that people can read?</span></p>
+</section>
+<section id="layers" class="slide level2 demo-slide">
+<h2>Layers</h2>
+<p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
+<div id="82237044" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> deaths.plot(</span>
+<span id="cb7-2"><a aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"black"</span>, markersize<span class="op">=</span>deaths[<span class="st">"Count"</span>] <span class="op">*</span> <span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>)</span>
+<span id="cb7-3"><a aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-4"><a aria-hidden="true" tabindex="-1"></a>pumps.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, marker<span class="op">=</span><span class="st">"^"</span>, markersize<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb7-5"><a aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="flow">
+<p><span class="step">Deaths</span> <span class="arrow">+</span> <span class="step">Pumps</span> <span class="arrow">+</span> <span class="step light">Street map</span></p>
+</div>
+<aside class="notes">
+<p>Build it up a step at a time: deaths.plot(), then color, then markersize as a number, then from Count, then the pumps with ax=ax. Compare to Snow’s stacked bars. Ask: what do you notice?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-background-map" class="slide level2">
+<h2>A background map</h2>
+<div id="f60200cb" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> contextily <span class="im">as</span> cx</span>
+<span id="cb8-2"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> deaths.plot(</span>
+<span id="cb8-4"><a aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"black"</span>, markersize<span class="op">=</span>deaths[<span class="st">"Count"</span>] <span class="op">*</span> <span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>)</span>
+<span id="cb8-5"><a aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a aria-hidden="true" tabindex="-1"></a>pumps.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, marker<span class="op">=</span><span class="st">"^"</span>, markersize<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb8-7"><a aria-hidden="true" tabindex="-1"></a>cx.add_basemap(ax, crs<span class="op">=</span>deaths.crs, source<span class="op">=</span>cx.providers.Esri.WorldStreetMap)</span>
+<span id="cb8-8"><a aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="small">
+<ul>
+<li><code>crs=deaths.crs</code> fits the tiles to our data</li>
+<li>Keep the attribution in the corner</li>
+</ul>
+</div>
+<aside class="notes">
+<p>If time, show the optional extra in the notes: source=“SnowGIS_SHP/SnowMap.tif” puts the points on Snow’s own map.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="an-interactive-map" class="slide level2">
+<h2>An interactive map</h2>
+<div id="deda5208" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>deaths.explore(</span>
+<span id="cb9-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"Count"</span>,</span>
+<span id="cb9-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>
+<span id="cb9-4"><a aria-hidden="true" tabindex="-1"></a>    marker_kwds<span class="op">=</span>{<span class="st">"radius"</span>: <span class="dv">4</span>},</span>
+<span id="cb9-5"><a aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"Esri.WorldStreetMap"</span>,</span>
+<span id="cb9-6"><a aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cards">
+<div class="card">
+<p><strong>.plot()</strong> Static: reports, papers, slides</p>
+</div>
+<div class="card">
+<p><strong>.explore()</strong> Interactive: exploring data, web pages</p>
+</div>
+</div>
+<aside class="notes">
+<p>Zoom in and hover over points. explore() converts to the web map CRS for you.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="an-interactive-map-1" class="slide level2 demo-slide">
+<h2>An interactive map</h2>
+<p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">7 min</span></p>
+<ol type="1">
+<li>Save the map of the deaths as <code>m</code></li>
+<li>Add the pumps: <code>pumps.explore(m=m, color="blue")</code></li>
+<li>Name the layers (<code>name="Deaths"</code>, <code>name="Pumps"</code>) and add a layer control:</li>
+</ol>
+<div id="20132b45" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span>
+<span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a aria-hidden="true" tabindex="-1"></a>folium.LayerControl().add_to(m)</span>
+<span id="cb10-4"><a aria-hidden="true" tabindex="-1"></a>m</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="4" type="1">
+<li>Hover to find the address with the <strong>most deaths</strong>. Is it near a pump?</li>
+</ol>
+<div class="muted">
+<p>Exercise 2 in the notes.</p>
+</div>
+</section>
+<section id="the-worst-hit-address" class="slide level2 demo-slide">
+<h2>The worst-hit address</h2>
+<p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
+<div id="2be0774f" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> deaths.explore(</span>
+<span id="cb11-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"Count"</span>,</span>
+<span id="cb11-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>
+<span id="cb11-4"><a aria-hidden="true" tabindex="-1"></a>    marker_kwds<span class="op">=</span>{<span class="st">"radius"</span>: <span class="dv">4</span>},</span>
+<span id="cb11-5"><a aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"Esri.WorldStreetMap"</span>,</span>
+<span id="cb11-6"><a aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Deaths"</span>,</span>
+<span id="cb11-7"><a aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a aria-hidden="true" tabindex="-1"></a>pumps.explore(m<span class="op">=</span>m, color<span class="op">=</span><span class="st">"blue"</span>, marker_kwds<span class="op">=</span>{<span class="st">"radius"</span>: <span class="dv">8</span>}, name<span class="op">=</span><span class="st">"Pumps"</span>)</span>
+<span id="cb11-9"><a aria-hidden="true" tabindex="-1"></a>folium.LayerControl().add_to(m)</span>
+<span id="cb11-10"><a aria-hidden="true" tabindex="-1"></a>m</span>
+<span id="cb11-11"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a aria-hidden="true" tabindex="-1"></a>worst <span class="op">=</span> deaths.loc[deaths[<span class="st">"Count"</span>].idxmax()]</span>
+<span id="cb11-13"><a aria-hidden="true" tabindex="-1"></a>worst[<span class="st">"geometry"</span>].distance(pumps.geometry.iloc[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="medium">
+<p><strong>15 deaths</strong>, about <strong>17 metres</strong> from the Broad Street pump</p>
+</div>
+</section>
+<section id="break" class="slide level2 center">
+<h2>Break</h2>
+<div class="big center">
+<p>10 minutes</p>
+</div>
+<aside class="notes">
+<p>About 1 hour 20 minutes in. Colab may disconnect if left idle: if so, rerun the notebook (Runtime → Run before).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="the-nearest-pump" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1><span class="section-number">03</span> The nearest pump</h1>
+<p><span class="section-question">Which pump was closest to each death?</span></p>
+</section>
+<section id="joining-by-location" class="slide level2 demo-slide">
+<h2>Joining by location</h2>
+<p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
+<div id="5a8fb9d5" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" tabindex="-1"></a>nearest <span class="op">=</span> deaths.sjoin_nearest(pumps, distance_col<span class="op">=</span><span class="st">"distance"</span>)</span>
+<span id="cb12-2"><a aria-hidden="true" tabindex="-1"></a>nearest.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cards">
+<div class="card">
+<p><strong>pandas join</strong> Match rows on a shared column, like an ID</p>
+</div>
+<div class="card">
+<p><strong>Spatial join</strong> Match rows by <strong>location</strong></p>
+</div>
+</div>
+<aside class="notes">
+<p>Explain the new columns: index_right (added by every spatial join), pump_id, distance (metres, because we are in the British National Grid). Straight-line distance: flag that we come back to this in section 5.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="deaths-per-pump" class="slide level2">
+<h2>Deaths per pump</h2>
+<div id="dbbc6f7b" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" tabindex="-1"></a>deaths_per_pump <span class="op">=</span> nearest.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-2"><a aria-hidden="true" tabindex="-1"></a>deaths_per_pump.sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="doc-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Pump</th>
+<th>0</th>
+<th>1</th>
+<th>4</th>
+<th>5</th>
+<th>7</th>
+<th>2</th>
+<th>3</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Deaths</td>
+<td><strong>340</strong></td>
+<td>65</td>
+<td>40</td>
+<td>27</td>
+<td>12</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="medium center">
+<p><strong>70%</strong> of the 489 deaths were nearest the Broad Street pump</p>
+</div>
+<aside class="notes">
+<p>Pumps 3 and 6 are missing from the groupby output (no address had them as nearest), so they show as 0 here. Then nearest[“distance”].describe() (about 105 m on average, 316 m at most) and the map coloured by pump_id with categorical=True.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="deaths-within-100-metres" class="slide level2 demo-slide">
+<h2>Deaths within 100 metres</h2>
+<p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">7 min</span></p>
+<ol type="1">
+<li><code>broad_street = pumps.geometry.iloc[0]</code></li>
+<li>Use <code>deaths.distance(broad_street)</code> to find the addresses within <strong>100 metres</strong></li>
+<li>How many <strong>deaths</strong> were at those addresses? What <strong>percentage</strong> of all deaths?</li>
+</ol>
+<div class="muted">
+<p>Extra: <code>broad_street.buffer(100)</code> makes a 100 metre circle. Map it. Exercise 3 in the notes.</p>
+</div>
+</section>
+<section id="deaths-within-100-metres-1" class="slide level2 demo-slide">
+<h2>196 deaths within 100 metres</h2>
+<p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
+<div id="81ed65e3" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" tabindex="-1"></a>broad_street <span class="op">=</span> pumps.geometry.iloc[<span class="dv">0</span>]</span>
+<span id="cb14-2"><a aria-hidden="true" tabindex="-1"></a>within_100m <span class="op">=</span> deaths[deaths.distance(broad_street) <span class="op">&lt;=</span> <span class="dv">100</span>]</span>
+<span id="cb14-3"><a aria-hidden="true" tabindex="-1"></a>deaths_near <span class="op">=</span> within_100m[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
+<span id="cb14-4"><a aria-hidden="true" tabindex="-1"></a>deaths_near, <span class="dv">100</span> <span class="op">*</span> deaths_near <span class="op">/</span> deaths[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="medium">
+<p><strong>196 deaths</strong>, 40% of the total, within 100 metres of the pump</p>
+</div>
+</section></section>
+<section>
+<section id="pump-catchments" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1><span class="section-number">04</span> Pump catchments</h1>
+<p><span class="section-question">Which area did each pump serve?</span></p>
+</section>
+<section id="voronoi-polygons" class="slide level2 demo-slide">
+<h2>Voronoi polygons</h2>
+<p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
+<div id="68b10272" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box</span>
+<span id="cb15-2"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a aria-hidden="true" tabindex="-1"></a>all_points <span class="op">=</span> pd.concat([deaths.geometry, pumps.geometry])</span>
+<span id="cb15-4"><a aria-hidden="true" tabindex="-1"></a>xmin, ymin, xmax, ymax <span class="op">=</span> all_points.total_bounds</span>
+<span id="cb15-5"><a aria-hidden="true" tabindex="-1"></a>study_area <span class="op">=</span> box(xmin <span class="op">-</span> <span class="dv">50</span>, ymin <span class="op">-</span> <span class="dv">50</span>, xmax <span class="op">+</span> <span class="dv">50</span>, ymax <span class="op">+</span> <span class="dv">50</span>)</span>
+<span id="cb15-6"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a aria-hidden="true" tabindex="-1"></a>cells <span class="op">=</span> pumps.voronoi_polygons(extend_to<span class="op">=</span>study_area)</span>
+<span id="cb15-8"><a aria-hidden="true" tabindex="-1"></a>catchments <span class="op">=</span> gpd.GeoDataFrame(geometry<span class="op">=</span>cells)</span>
+<span id="cb15-9"><a aria-hidden="true" tabindex="-1"></a>catchments <span class="op">=</span> catchments.sjoin(pumps, predicate<span class="op">=</span><span class="st">"contains"</span>).clip(study_area)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="small">
+<ul>
+<li>Each polygon is the area <strong>nearest</strong> to one pump</li>
+<li>The polygons are <strong>not</strong> in the order of the pumps, so a spatial join labels them</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Show cells first, then the join, then the plot coloured by pump_id with the pumps and deaths on top. The same method answers questions like “which GP surgery is nearest?”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="deaths-in-each-catchment" class="slide level2">
+<h2>Deaths in each catchment</h2>
+<div id="0f6ab7b5" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" tabindex="-1"></a>deaths_in_catchment <span class="op">=</span> deaths.sjoin(catchments[[<span class="st">"pump_id"</span>, <span class="st">"geometry"</span>]])</span>
+<span id="cb16-2"><a aria-hidden="true" tabindex="-1"></a>deaths_in_catchment.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="medium">
+<p>The same totals as the nearest pump. Why?</p>
+</div>
+<aside class="notes">
+<p>Wait for answers in the chat. Each polygon is the area nearest its pump, so the methods must agree. The polygons add the areas, including where no one died.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-map-of-catchments" class="slide level2 demo-slide">
+<h2>A map of catchments</h2>
+<p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">7 min</span></p>
+<div id="cf99fde3" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> deaths_in_catchment.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
+<span id="cb17-2"><a aria-hidden="true" tabindex="-1"></a>catchments[<span class="st">"deaths"</span>] <span class="op">=</span> catchments[<span class="st">"pump_id"</span>].<span class="bu">map</span>(totals).fillna(<span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="1">
+<li>Plot <code>catchments</code> with <code>column="deaths"</code>, <code>cmap="Reds"</code> and <code>legend=True</code></li>
+<li>Add the pumps and a background map</li>
+<li>Which catchments had <strong>no deaths</strong>?</li>
+</ol>
+<div class="muted">
+<p>Exercise 4 in the notes.</p>
+</div>
+</section>
+<section id="the-catchment-map" class="slide level2 demo-slide">
+<h2>The catchment map</h2>
+<p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
+<div id="1da4df53" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> catchments.plot(</span>
+<span id="cb18-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"deaths"</span>,</span>
+<span id="cb18-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>
+<span id="cb18-4"><a aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-5"><a aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">"black"</span>,</span>
+<span id="cb18-6"><a aria-hidden="true" tabindex="-1"></a>    figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>),</span>
+<span id="cb18-7"><a aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-8"><a aria-hidden="true" tabindex="-1"></a>pumps.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, marker<span class="op">=</span><span class="st">"^"</span>, markersize<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb18-9"><a aria-hidden="true" tabindex="-1"></a>cx.add_basemap(ax, crs<span class="op">=</span>deaths.crs, source<span class="op">=</span>cx.providers.Esri.WorldStreetMap)</span>
+<span id="cb18-10"><a aria-hidden="true" tabindex="-1"></a>ax.set_axis_off()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="small">
+<p>Pumps <strong>3</strong> and <strong>6</strong> had no deaths. A map coloured by a value for each area is a <strong>choropleth</strong>.</p>
+</div>
+</section></section>
+<section>
+<section id="what-the-map-cannot-tell-us" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1><span class="section-number">05</span> What the map cannot tell us</h1>
+<p><span class="section-question">What does this map show, and what does it not?</span></p>
+</section>
+<section id="the-exceptions" class="slide level2">
+<h2>The exceptions</h2>
+<div class="cards grid2">
+<div class="card fragment">
+<p><strong>Straight lines</strong> For some addresses, the Rupert Street pump was closer in a straight line, but the streets made Broad Street quicker to reach</p>
+</div>
+<div class="card fragment">
+<p><strong>The brewery</strong> No deaths in the blocks just east of the pump. The brewery had its own well, and the workers drank its beer</p>
+</div>
+<div class="card fragment">
+<p><strong>The Hampstead widow</strong> Susannah Eley had Broad Street water delivered to Hampstead every day. She and her niece caught cholera</p>
+</div>
+<div class="card fragment">
+<p><strong>The first case</strong> Henry Whitehead, a local curate, traced the first case to a baby at 40 Broad Street</p>
+</div>
+</div>
+<aside class="notes">
+<p>None of these shows up as a cluster on a map: Snow found them by talking to people. His case was persuasive because the map fitted with this evidence.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-the-data" class="slide level2">
+<h2>The limits of the data</h2>
+<div class="small">
+<ul>
+<li><strong>Where people died, not where they drank</strong>: home addresses only</li>
+<li><strong>Who is missing</strong>: people who died somewhere else, like Susannah Eley</li>
+<li><strong>Digitised by hand</strong>: the positions are approximate</li>
+<li><strong>The timing</strong>: the outbreak was already slowing when the handle was removed</li>
+<li><strong>Correlation, not cause</strong>: a cluster near a pump does not prove the pump caused it</li>
+</ul>
+</div>
+</section>
+<section id="question-the-map" class="slide level2 demo-slide">
+<h2>Question the map</h2>
+<p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">5 min</span></p>
+<p>Pick one question, and answer in the chat:</p>
+<ol type="1">
+<li>With only the catchment map and no interviews, what could you <strong>wrongly conclude</strong>?</li>
+<li>What <strong>extra data</strong> would make the analysis stronger?</li>
+<li>Think of location data from <strong>your own work</strong>. What would a map of it leave out?</li>
+</ol>
+<div class="muted">
+<p>Exercise 5 in the notes.</p>
+</div>
+<aside class="notes">
+<p>Read out a few answers. Draw out: no population, so no rates (a crowded street has more deaths); no dates; no record of where people got water; walking distance on 1854 streets. Today: health data is released for areas, not addresses, and the boundaries change the pattern.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="summary" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
+<h1>Summary</h1>
+
+</section>
+<section id="what-you-can-now-do" class="slide level2">
+<h2>What you can now do</h2>
+<div class="doc-table">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Read a file</td>
+<td><code>gpd.read_file("file.shp")</code></td>
+</tr>
+<tr class="even">
+<td>Check, label, convert the CRS</td>
+<td><code>.crs</code>, <code>.set_crs()</code>, <code>.to_crs()</code></td>
+</tr>
+<tr class="odd">
+<td>Static map, background map</td>
+<td><code>.plot(ax=ax)</code>, <code>cx.add_basemap()</code></td>
+</tr>
+<tr class="even">
+<td>Interactive map</td>
+<td><code>.explore(m=m)</code></td>
+</tr>
+<tr class="odd">
+<td>Nearest join</td>
+<td><code>.sjoin_nearest(other, distance_col="distance")</code></td>
+</tr>
+<tr class="even">
+<td>Join by location</td>
+<td><code>.sjoin(other, predicate="intersects")</code></td>
+</tr>
+<tr class="odd">
+<td>Areas</td>
+<td><code>.buffer()</code>, <code>.voronoi_polygons()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<aside class="notes">
+<p>Go back to the six objectives slide and tick them off.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-steps" class="slide level2">
+<h2>Next steps</h2>
+<div class="small">
+<ul>
+<li><a href="https://geopandas.org/en/stable/docs/user_guide.html">GeoPandas user guide</a></li>
+<li><a href="https://pythongis.org/"><em>Python for Geographic Data Analysis</em></a> (free online book)</li>
+<li><a href="https://geographicdata.science/book/intro.html"><em>Geographic Data Science with Python</em></a> (free online book)</li>
+<li>UK boundaries: <a href="https://geoportal.statistics.gov.uk/">ONS Open Geography Portal</a></li>
+<li>Data: <a href="https://johnsnow.rtwilson.com/">Robin Wilson’s John Snow data</a></li>
+</ul>
+</div>
+</section>
+<section id="thank-you" class="slide level2 center">
+<h2>Thank you</h2>
+<div class="big center">
+<p>Questions?</p>
+</div>
+<aside class="notes">
+<p>Ask people to fill in the feedback form.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="assets/UoB_RGB_24.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p><a href="https://www.bristol.ac.uk/golding/">Jean Golding Institute</a> © CC-BY 4.0</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"\u003ci class=\"fas fa-gear\">\u003c/i>","content":"\u003cul class=\"slide-menu-items\">\n\u003cli class=\"slide-tool-item active\" data-item=\"0\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\">\u003ckbd>f\u003c/kbd> Fullscreen\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"1\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\">\u003ckbd>s\u003c/kbd> Speaker View\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"2\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\">\u003ckbd>o\u003c/kbd> Slide Overview\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"3\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\">\u003ckbd>e\u003c/kbd> PDF Export Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"4\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\">\u003ckbd>r\u003c/kbd> Scroll View Mode\u003c/a>\u003c/li>\n\u003cli class=\"slide-tool-item\" data-item=\"5\">\u003ca href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\">\u003ckbd>?\u003c/kbd> Keyboard Help\u003c/a>\u003c/li>\n\u003c/ul>"}],"openButton":true,"openButtonLabel":"Slide menu"},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+          window.quartoDecorateExternalLinks = function (root) {
+         var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+              if (!link.classList.contains('no-external-icon')) {
+              }
+            }
+          }
+          };
+          window.quartoDecorateExternalLinks(window.document);
+        // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+        // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+        const hideOnEscAndFocusOut = {
+          name: 'hideOnEscAndFocusOut',
+          defaultValue: true,
+          fn(instance) {
+            const dismiss = () => {
+              // A show scheduled by the trigger delay would otherwise reopen it
+              instance.clearDelayTimeouts();
+              instance.hide();
+            };
+            const onKeyDown = (event) => {
+              if (event.key !== 'Escape') {
+                return;
+              }
+              // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+              // except an open reveal.js slide menu, which Esc should close too.
+              // The menu handles keys only when its keyboard option is on.
+              const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+                window.Reveal.getConfig().menu?.keyboard !== false;
+              if (!menuHandlesEsc) {
+                event.stopPropagation();
+              }
+              if (instance.popper.contains(window.document.activeElement)) {
+                // Disabled while refocusing so the focus trigger does not reopen it
+                instance.disable();
+                instance.reference.focus();
+                instance.enable();
+              }
+              dismiss();
+            };
+            const onFocusOut = (event) => {
+              const target = event.relatedTarget;
+              if (target && !instance.reference.contains(target) &&
+                  !instance.popper.contains(target)) {
+                dismiss();
+              }
+            };
+            // On the trigger too: a click trigger (code-annotations: select) has no
+            // blur handling. Attached for the instance's lifetime so leaving the
+            // trigger also cancels a show still pending on the trigger delay.
+            instance.reference.addEventListener('focusout', onFocusOut);
+            return {
+              onShow() {
+                window.document.addEventListener('keydown', onKeyDown, true);
+                instance.popper.addEventListener('focusout', onFocusOut);
+              },
+              onHide() {
+                window.document.removeEventListener('keydown', onKeyDown, true);
+                instance.popper.removeEventListener('focusout', onFocusOut);
+              },
+              onDestroy() {
+                instance.reference.removeEventListener('focusout', onFocusOut);
+              },
+            };
+          },
+        };
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+            plugins: [hideOnEscAndFocusOut],
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

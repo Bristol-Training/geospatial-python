@@ -1,0 +1,858 @@
+---
+title: "Geospatial Python"
+subtitle: "Mapping John Snow's cholera outbreak"
+format:
+  html:
+    body-classes: notes-page
+    back-to-top-navigation: true
+jupyter: python3
+execute:
+  warning: true
+---
+
+![](assets/UoB_RGB_24.png){width=220px fig-alt="University of Bristol logo"}
+
+## About this page {.unnumbered .unlisted}
+
+This page has everything you need for the course. The slides we use in the session are just below, followed by the full course notes, with every exercise and its answer. It is worth bookmarking so you can come back to it afterwards.
+
+::: {.slides-embed}
+```{=html}
+<iframe id="slides-frame" src="slides.html" title="Course slides" allowfullscreen></iframe>
+```
+:::
+
+::: {.hub-buttons}
+```{=html}
+<button type="button" class="btn hub-btn" onclick="document.getElementById('slides-frame').requestFullscreen()">⛶ Full screen</button>
+<a class="btn hub-btn" href="slides.html" target="_blank" rel="noopener">Open slides in a new tab</a>
+<a class="btn hub-btn" href="https://colab.research.google.com/github/Bristol-Training/geospatial-python/blob/main/notebooks/geospatial-python.ipynb" target="_blank" rel="noopener">Open the notebook in Colab</a>
+```
+:::
+
+Click on the slides, then use the arrow keys to move through them. Instructors: the [instructor notes](instructor.qmd) have timings and tips for each section.
+
+# Introduction {.unnumbered}
+
+Most health data has a location attached: where a patient lives, where a GP surgery or hospital is, where a case of a disease was reported. Geospatial analysis uses those locations to answer questions that a table alone cannot, such as who lives far from a service, or whether cases cluster in one place.
+
+In this course you will learn to work with location data in Python, using the `geopandas` library. We will do it by recreating one of the most famous analyses in the history of public health: John Snow's map of the 1854 cholera outbreak in Soho, London.
+
+## The story {.unnumbered}
+
+At the end of August 1854, cholera broke out in Soho, an overcrowded part of London. Hundreds of people died within days.
+
+Most doctors at the time believed in **miasma theory**: that diseases like cholera spread through "bad air". The physician John Snow thought cholera spread through contaminated water. He studied the death records and visited the households of people who had died, and found that most of them had lived near, and drunk from, the water pump on Broad Street ([CDC, 2004](https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5334a1.htm)).
+
+He presented his evidence to the local Board of Guardians, and the pump's handle was removed on 8 September 1854 ([UCLA Department of Epidemiology](https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_e.html)). Snow later published a map of the deaths, which shows each death as a small bar at the address where it happened, and the pumps as dots. The bacterium that causes cholera, *Vibrio cholerae*, was not isolated until 1883.
+
+## The data {.unnumbered}
+
+We use Robin Wilson's [digitised version of Snow's map](https://johnsnow.rtwilson.com/). He traced the deaths and the pumps from Snow's map, and lined them up with a modern map, so they can be used in modern software. The download has several files, and we use three of them:
+
+| File | What it holds |
+|---|---|
+| `Cholera_Deaths.shp` | A point for each address where one or more people died. Its `Count` column is the number of deaths there. |
+| `Pumps.shp` | A point for each water pump. There are no other columns: the pumps are not named. |
+| `SnowMap.tif` | An image of Snow's map, lined up with the modern streets (used in an optional extra). |
+
+::: {.big-statement}
+489 deaths and 8 water pumps. Which pump was to blame?
+:::
+
+Each section of the course answers one question, and builds on the one before:
+
+::: {.flow}
+[Location data]{.step} [→]{.arrow} [Making maps]{.step} [→]{.arrow} [The nearest pump]{.step} [→]{.arrow} [Pump catchments]{.step} [→]{.arrow} [What the map cannot tell us]{.step}
+:::
+
+### How to get the most out of this course {.unnumbered}
+
+We write the code together: type each line into your own notebook rather than copying and pasting, as typing it helps you remember it. Once a cell has run, try changing something, such as a colour or a number, and run it again. The exercise at the end of each section gives you a chance to try things on your own.
+
+### Intended learning outcomes {.unnumbered}
+
+By the end of this course, you will be able to:
+
+1. Load location data into a GeoDataFrame, and describe how it differs from a pandas DataFrame.
+2. Explain what a coordinate reference system (CRS) is, and check and change the CRS of a dataset.
+3. Make a static map with a background map, and an interactive map.
+4. Join datasets by location, for example to find the nearest water pump to each address.
+5. Divide an area into catchments around points, and summarise data within each one.
+6. Describe what a map can and cannot tell us, using Snow's map as an example.
+
+### What this course does not cover {.unnumbered}
+
+- **Raster data**, such as satellite images. The [rasterio](https://rasterio.readthedocs.io/) library handles these.
+- **Routes along streets**, such as walking distances and travel times. The [OSMnx](https://osmnx.readthedocs.io/) library works with street networks.
+- **Spatial statistics**, such as testing whether points cluster more than you would expect by chance. See [*Geographic Data Science with Python*](https://geographicdata.science/book/intro.html).
+
+## How to read this document {.unnumbered}
+
+Code is shown in a grey box. When the code is run, its output is shown below it, marked with a red line on the left:
+
+```{python}
+print("Hello!")
+```
+
+Commands that install packages in Colab start with `%`:
+
+```{.python filename="Colab"}
+%pip install contextily
+```
+
+There is an exercise at the end of each section, shown in a blue box. The answer is in the yellow box underneath: have a go yourself before you open it.
+
+::: {#exampleN .callout-note icon=false title='Exercise'}
+This is an exercise. Click on the box below to see the answer.
+:::
+
+::: {#answerN .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+This is the answer.
+:::
+
+Green boxes like this one sum up the main points of each section:
+
+::: {#keypointsN .callout-tip icon=false title='Key points'}
+These are the main points to take away.
+:::
+
+## Before the course {.unnumbered}
+
+You will need:
+
+- A Google account, to use [Google Colab](https://colab.research.google.com/). Colab runs Python in your web browser, so you do not need to install anything.
+- Basic Python: variables, lists, functions and importing packages. Our [Introduction to Python](https://bristol-training.github.io/intro-python-1/) course covers this. Some experience of pandas helps, but we explain the pandas we use.
+
+If you can, open Colab before the day and check that you can log in.
+
+## Workspace setup {.unnumbered}
+
+1. [Open the course notebook in Colab](https://colab.research.google.com/github/Bristol-Training/geospatial-python/blob/main/notebooks/geospatial-python.ipynb).
+2. Click **File → Save a copy in Drive**, so that your changes are saved. If Colab warns that the notebook was not written by Google, click **Run anyway**.
+3. Run the first two cells: click in a cell and press **Shift + Enter**.
+
+The first cell installs the packages we need, if Colab does not already have them:
+
+```{.python filename="Colab"}
+%pip install --quiet "geopandas>=1.0" contextily folium mapclassify
+```
+
+| Package | What it does |
+|---|---|
+| [geopandas](https://geopandas.org/) | Reads, analyses and plots tables of data with locations |
+| [contextily](https://contextily.readthedocs.io/) | Adds background maps to plots |
+| [folium](https://python-visualization.github.io/folium/) | Makes interactive web maps, used by geopandas's `explore()` |
+| [mapclassify](https://pysal.org/mapclassify/) | Colour scales for maps, also needed by `explore()` |
+
+The second cell downloads the data and unzips it:
+
+```{python}
+import urllib.request
+import zipfile
+
+url = "https://johnsnow.rtwilson.com/data/SnowGIS_SHP.zip"
+urllib.request.urlretrieve(url, "SnowGIS_SHP.zip")
+
+with zipfile.ZipFile("SnowGIS_SHP.zip") as zip_file:
+    zip_file.extractall()
+```
+
+This makes a folder called `SnowGIS_SHP`. To see it, click the folder icon on the left of Colab.
+
+::: {.callout-note icon=false title="Files in Colab are temporary"}
+Colab deletes downloaded files when the session ends, for example if you close the tab or leave it idle for a while. If you come back later, run the notebook again from the top (**Runtime → Run before** in the cell you want to continue from).
+:::
+
+# Location data
+
+[How is location data stored, and what do the numbers mean?]{.lead-question}
+
+There are two main kinds of geospatial data:
+
+::: {.cards}
+::: {.card}
+**Vector data**
+Shapes with a table of values. Points (an address, a pump), lines (a road, a river) and polygons (a building, a county). This course uses vector data.
+:::
+::: {.card}
+**Raster data**
+A grid of cells, like the pixels of a photo, with a value in each cell. Satellite images, elevation and air pollution maps are rasters. `SnowMap.tif` is a raster.
+:::
+:::
+
+## Reading the data
+
+By convention, geopandas is imported as `gpd`, in the same way as pandas is imported as `pd`. `gpd.read_file()` reads location data in many formats, including shapefiles, GeoPackages and GeoJSON:
+
+```{python}
+import geopandas as gpd
+import pandas as pd
+
+deaths = gpd.read_file("SnowGIS_SHP/Cholera_Deaths.shp")
+pumps = gpd.read_file("SnowGIS_SHP/Pumps.shp")
+```
+
+::: {.callout-note icon=false title="What is a shapefile?"}
+A shapefile is an old but common format. It is really several files with the same name, which must be kept together:
+
+- `.shp` holds the shapes (here, points)
+- `.dbf` holds the table of values (here, the number of deaths)
+- `.shx` is an index that links the two
+- `.prj` describes the coordinate reference system (see below)
+
+You point `read_file()` at the `.shp` file, and geopandas finds the rest. Newer formats, such as GeoPackage (`.gpkg`), keep everything in one file, and are a better choice for your own data.
+:::
+
+## A table with locations
+
+Let's look at the first few rows:
+
+```{python}
+deaths.head()
+```
+
+This is a **GeoDataFrame**: a pandas DataFrame with a `geometry` column that holds a shape for each row.
+
+```{python}
+type(deaths)
+```
+
+Each row is an address. `Count` is the number of people who died there, and `geometry` is its location, written as `POINT (x y)`. geopandas stores these shapes using the [shapely](https://shapely.readthedocs.io/) library.
+
+Everything you know about pandas still works on a GeoDataFrame. For example, `len()` counts the rows, and `.sum()` adds up a column:
+
+```{python}
+len(deaths), deaths["Count"].sum()
+```
+
+There are 250 addresses and 489 deaths. `value_counts()` counts how often each value appears, and `sort_index()` puts them in order. Most addresses had one death, and one had 15:
+
+```{python}
+deaths["Count"].value_counts().sort_index()
+```
+
+The pumps table has only locations:
+
+```{python}
+pumps
+```
+
+There are 8 pumps. The file does not include their names, so we give each one a number to refer to it by. `range(len(pumps))` counts from 0 to 7:
+
+```{python}
+pumps["pump_id"] = range(len(pumps))
+```
+
+We will find out which pump is which in the exercise at the end of this section.
+
+## A first look
+
+`.plot()` draws the geometries, so you can check that the data looks sensible:
+
+```{python}
+#| fig-alt: "The locations of the cholera deaths as blue dots, with axis values in the hundreds of thousands"
+deaths.plot()
+```
+
+We will make better maps in the next section. For now, look at the numbers on the axes. They are in the hundreds of thousands, so they are not latitude and longitude. What are they?
+
+## Coordinate reference systems
+
+A location is a pair of numbers. To know where on Earth those numbers are, we need to know what they are measured from, and in what units. This is the **coordinate reference system** (CRS).
+
+There are two kinds:
+
+::: {.cards}
+::: {.card}
+**Geographic CRS**
+Positions on the curved surface of the Earth, as latitude and longitude in degrees. GPS and most web maps use WGS 84.
+:::
+::: {.card}
+**Projected CRS**
+Positions on a flat map, usually in metres. Flattening the Earth always distorts something, so each projected CRS is designed for one area, where the distortion is small.
+:::
+:::
+
+geopandas reads the CRS from the `.prj` file and stores it in `.crs`:
+
+```{python}
+deaths.crs
+```
+
+This data uses the **British National Grid**, a projected CRS designed for Great Britain. It measures positions in metres east and north of a point south-west of the Isles of Scilly, so the first address is about 529 km east and 181 km north of that point.
+
+Common CRSs have a code from the [EPSG registry](https://epsg.io/). The two you will meet most often in the UK are:
+
+| CRS | EPSG code | Units | Good for |
+|---|---|---|---|
+| British National Grid | 27700 | metres | Distances and areas in Great Britain |
+| WGS 84 (latitude and longitude) | 4326 | degrees | GPS, sharing data, web maps |
+
+This `.prj` file describes the CRS in words, without its EPSG code. It is good practice to state the CRS by its code, so that geopandas, and anyone reading your code, knows exactly which one it is:
+
+```{python}
+deaths = deaths.set_crs(27700, allow_override=True)
+pumps = pumps.set_crs(27700, allow_override=True)
+```
+
+`allow_override=True` is needed because the data already has a CRS: it tells geopandas that we mean to replace it.
+
+::: {.callout-warning icon=false title="set_crs() and to_crs() are different"}
+- `set_crs()` **labels** the data with a CRS, without changing the numbers. Use it when the CRS is missing or wrong.
+- `to_crs()` **converts** the numbers to a different CRS.
+
+`set_crs()` with the wrong CRS puts your data in the wrong place on Earth, with no error.
+:::
+
+## Changing the CRS
+
+To get latitude and longitude, convert the data to WGS 84:
+
+```{python}
+deaths_latlon = deaths.to_crs(4326)
+deaths_latlon.head()
+```
+
+The same addresses now have coordinates in degrees. Points are written as `POINT (x y)`, so **longitude comes first**. Most people, and most web maps, write a location the other way round.
+
+`.geometry.x` and `.geometry.y` give each coordinate on its own. Here, `y` is the latitude:
+
+```{python}
+deaths_latlon.geometry.y.head()
+```
+
+## Why the CRS matters
+
+The CRS matters most when you measure things. `.distance()` measures the distance from each point to a shape. `pumps.geometry.iloc[0]` picks out the location of the first pump, and we measure the distance from each address to it:
+
+```{python}
+first_pump = pumps.geometry.iloc[0]
+deaths.distance(first_pump).head()
+```
+
+In the British National Grid, the answer is in metres. In latitude and longitude, it is in degrees:
+
+```{python}
+first_pump_latlon = pumps.to_crs(4326).geometry.iloc[0]
+deaths_latlon.distance(first_pump_latlon).head()
+```
+
+A degree is not a fixed distance: a degree of longitude is about 111 km at the equator, about 69 km in London, and shrinks to nothing at the poles. geopandas warns you about this. **To measure distances or areas, use a projected CRS in metres**, such as the British National Grid in Great Britain.
+
+::: {.callout-note icon=false title="Layers need the same CRS"}
+To combine two layers, in a plot or an analysis, they must use the same CRS. If they do not, convert one with `to_crs()`. geopandas warns you if they do not match.
+:::
+
+::: {#keypoints1 .callout-tip icon=false title='Key points'}
+- A GeoDataFrame is a pandas DataFrame with a `geometry` column.
+- A CRS says what the coordinates mean. Check it with `.crs`.
+- `set_crs()` labels the data; `to_crs()` converts it.
+- Measure distances and areas in a projected CRS that uses metres.
+:::
+
+::: {#exercise1 .callout-note icon=false title='Exercise'}
+Which pump is pump 0?
+
+1. Convert `pumps` to latitude and longitude.
+2. Find the latitude and longitude of pump 0 (the first row).
+3. Paste them into Google Maps or OpenStreetMap as `latitude, longitude`. Which street is it on?
+:::
+
+::: {#answer1 .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+```{python}
+pumps_latlon = pumps.to_crs(4326)
+pumps_latlon.geometry.y.iloc[0], pumps_latlon.geometry.x.iloc[0]
+```
+
+Pump 0 is at about 51.5133, -0.1367, on Broadwick Street in Soho. In 1854 this was Broad Street: **pump 0 is the Broad Street pump**. A replica of the pump stands there today.
+
+If your map shows the Indian Ocean, you have swapped the numbers: web maps expect latitude first, but `POINT (x y)` puts longitude first.
+:::
+
+# Making maps
+
+[How do we turn a table of points into a map that people can read?]{.lead-question}
+
+A good map shows the data clearly and gives just enough context to read it. We will build one up in layers, like sheets of tracing paper: the deaths, then the pumps on top, then a street map underneath.
+
+## Layers
+
+`.plot()` uses the matplotlib library, and returns a matplotlib `Axes`: the area of the figure that the map is drawn in. If we save it as `ax` and pass it to the next `.plot()` with `ax=ax`, the next layer is drawn on the same map.
+
+Each point is an address, and some addresses had many deaths. Like Snow's stacked bars, we can show this by the size of each dot. `markersize` takes either a single number or a column, so we multiply the `Count` column by 10 to make the dots big enough to see:
+
+```{python}
+#| fig-alt: "Cholera deaths as black dots sized by the number of deaths, and pumps as blue triangles"
+ax = deaths.plot(
+    color="black", markersize=deaths["Count"] * 10, alpha=0.7, figsize=(8, 8)
+)
+pumps.plot(ax=ax, color="blue", marker="^", markersize=80)
+ax.set_axis_off()
+```
+
+The other settings are:
+
+- `alpha=0.7` makes the dots slightly see-through, so overlapping dots stay visible.
+- `figsize=(8, 8)` sets the size of the figure, in inches.
+- `marker="^"` draws the pumps as triangles, so they stand out from the deaths.
+- `ax.set_axis_off()` hides the axis values, which readers of a map do not need.
+
+The cluster around one pump is already clear.
+
+## A background map
+
+Without streets, it is hard to tell where these points are. The `contextily` package adds a background map, made from the same small square images ("tiles") as web maps:
+
+```{python}
+#| fig-alt: "Cholera deaths and pumps on a street map of Soho"
+import contextily as cx
+
+ax = deaths.plot(
+    color="black", markersize=deaths["Count"] * 10, alpha=0.7, figsize=(8, 8)
+)
+pumps.plot(ax=ax, color="blue", marker="^", markersize=80)
+cx.add_basemap(ax, crs=deaths.crs, source=cx.providers.Esri.WorldStreetMap)
+ax.set_axis_off()
+```
+
+- `crs=deaths.crs` tells contextily the CRS of our data. Map tiles use their own CRS, so contextily converts them to match.
+- `source` chooses the map. We use Esri's street map.
+
+Keep the attribution in the corner: the people who made the map require it. `cx.providers` lists many other maps, but some now need a key, or block requests from code.
+
+To save a map as an image, for a report or slides, use `ax.figure.savefig("map.png", dpi=300)`. `dpi` sets the resolution: 300 is good for print.
+
+::: {.callout-note icon=false title="In geopandas 1.2 and later"}
+geopandas 1.2 (September 2026) can add the background map itself, with `.plot(tiles=...)`. Colab may have an older version, so these notes use contextily, which works with every version.
+:::
+
+## An interactive map
+
+`.explore()` makes an interactive map that you can zoom, pan and hover over. It converts the data to the CRS that web maps use for you:
+
+```{python}
+deaths.explore(
+    column="Count",
+    cmap="Reds",
+    marker_kwds={"radius": 4},
+    tiles="Esri.WorldStreetMap",
+)
+```
+
+- `column="Count"` colours each point by its number of deaths, and `cmap` chooses the colours.
+- `marker_kwds={"radius": 4}` sets the size of the dots, in pixels.
+- `tiles` chooses the background map, by name.
+
+Hover over a point to see its row of the table.
+
+::: {.callout-note icon=false title="Static or interactive?"}
+Use `.plot()` for reports, papers and slides, where the map has to work on paper. Use `.explore()` to explore your data, or to share a map as a web page with `.save("map.html")`.
+:::
+
+::: {#keypoints2 .callout-tip icon=false title='Key points'}
+- Build a map in layers, with `ax=ax`.
+- `markersize` and `column` show values from the table as size or colour.
+- `cx.add_basemap()` adds a background map. Keep the attribution.
+- `.explore()` makes an interactive map.
+:::
+
+::: {#exercise2 .callout-note icon=false title='Exercise'}
+Make an interactive map of the deaths and the pumps.
+
+1. Make the interactive map of the deaths, as above, and save it as `m`.
+2. Add the pumps as a second layer, with `pumps.explore(m=m, color="blue")`. Passing `m=m` draws on the same map, like `ax=ax` does for `.plot()`.
+3. Give each layer a name, with `name="Deaths"` and `name="Pumps"`, then add a layer control so you can turn them on and off:
+
+    ```{.python}
+    import folium
+
+    folium.LayerControl().add_to(m)
+    m
+    ```
+
+4. Hover over the points to find the address with the most deaths. Is it near a pump?
+:::
+
+::: {#answer2 .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+```{python}
+import folium
+
+m = deaths.explore(
+    column="Count",
+    cmap="Reds",
+    marker_kwds={"radius": 4},
+    tiles="Esri.WorldStreetMap",
+    name="Deaths",
+)
+pumps.explore(m=m, color="blue", marker_kwds={"radius": 8}, name="Pumps")
+folium.LayerControl().add_to(m)
+m
+```
+
+The address with 15 deaths is next to the Broad Street pump. `idxmax()` finds the row with the largest `Count`, and `.distance()` shows how close it is:
+
+```{python}
+worst = deaths.loc[deaths["Count"].idxmax()]
+worst["geometry"].distance(pumps.geometry.iloc[0])
+```
+
+It is about 17 metres away.
+:::
+
+::: {.callout-tip icon=false title="Optional extra: Snow's original map"}
+`SnowMap.tif` is an image of Snow's map, lined up with the modern streets. contextily can use it as the background, instead of a map from the web:
+
+```{python}
+#| fig-alt: "Cholera deaths and pumps on John Snow's original 1854 map"
+ax = deaths.plot(
+    color="red", markersize=deaths["Count"] * 10, alpha=0.7, figsize=(8, 8)
+)
+pumps.plot(ax=ax, color="blue", marker="^", markersize=80)
+cx.add_basemap(ax, crs=deaths.crs, source="SnowGIS_SHP/SnowMap.tif")
+ax.set_axis_off()
+```
+
+The red dots sit on Snow's black bars, which shows that the data lines up with his map.
+:::
+
+# The nearest pump
+
+[Which pump was closest to each death?]{.lead-question}
+
+Snow's argument was that the deaths clustered around the Broad Street pump. We can test this by finding the nearest pump to each address, and adding up the deaths for each pump.
+
+## Joining by location
+
+In pandas, you join two tables using a column they share, such as a patient ID. geopandas can also join tables by where their shapes are. This is a **spatial join**:
+
+::: {.cards}
+::: {.card}
+**Join by a column**
+`pd.merge()`: match rows that have the same value in a shared column.
+:::
+::: {.card}
+**Join by location**
+`sjoin()`: match rows whose shapes touch, overlap or contain each other.
+:::
+::: {.card}
+**Join to the nearest**
+`sjoin_nearest()`: match each row to the closest row of the other table.
+:::
+:::
+
+`sjoin_nearest()` gives each address the columns of its nearest pump:
+
+```{python}
+nearest = deaths.sjoin_nearest(pumps, distance_col="distance")
+nearest.head()
+```
+
+The table still has one row for each of the 250 addresses, with three new columns:
+
+- `index_right` is the pump's row in `pumps`. geopandas adds it to every spatial join.
+- `pump_id` is the pump's number, from the `pumps` table.
+- `distance` is the distance to the pump. We asked for it with `distance_col`. The data is in the British National Grid, so it is in metres.
+
+`sjoin_nearest()` measures in a straight line, "as the crow flies". People walk along streets, so the nearest pump is not always the quickest to reach. We come back to this in section 5.
+
+## Deaths per pump
+
+Now we can add up the deaths for each pump. `groupby("pump_id")` puts the rows into groups, one for each pump, and `["Count"].sum()` adds up the deaths in each group:
+
+```{python}
+deaths_per_pump = nearest.groupby("pump_id")["Count"].sum()
+deaths_per_pump.sort_values(ascending=False)
+```
+
+As a percentage of all deaths:
+
+```{python}
+percent = 100 * deaths_per_pump / deaths["Count"].sum()
+percent.round(1).sort_values(ascending=False)
+```
+
+Of the 489 deaths, 340 (70%) were at addresses where the nearest pump was the Broad Street pump. The next highest pump had 65. Pumps 3 and 6 are missing from the table: no address had them as its nearest pump.
+
+`describe()` summarises the distances:
+
+```{python}
+nearest["distance"].describe()
+```
+
+On average, an address was about 105 metres from its nearest pump, and the furthest was about 316 metres away.
+
+## Mapping the result
+
+Colouring each address by its nearest pump shows the area each pump was closest to. `categorical=True` treats the pump numbers as labels, not as numbers on a scale, and `cmap="tab10"` gives each one a different colour:
+
+```{python}
+#| fig-alt: "Deaths coloured by their nearest pump, with most in the colour of pump 0"
+ax = nearest.plot(
+    column="pump_id",
+    categorical=True,
+    legend=True,
+    cmap="tab10",
+    markersize=nearest["Count"] * 10,
+    figsize=(8, 8),
+)
+pumps.plot(ax=ax, color="black", marker="^", markersize=80)
+cx.add_basemap(ax, crs=deaths.crs, source=cx.providers.Esri.WorldStreetMap)
+ax.set_axis_off()
+```
+
+::: {#keypoints3 .callout-tip icon=false title='Key points'}
+- A spatial join combines tables by location instead of by a shared column.
+- `sjoin_nearest()` finds the nearest feature, and `distance_col` records the distance.
+- After a spatial join, use pandas to group and summarise the table.
+:::
+
+::: {#exercise3 .callout-note icon=false title='Exercise'}
+How many deaths were within 100 metres of the Broad Street pump?
+
+1. Save the location of pump 0 as `broad_street`, with `pumps.geometry.iloc[0]`.
+2. Use `deaths.distance(broad_street)` to find the addresses within 100 metres of it.
+3. How many deaths were at those addresses? What percentage of all deaths is that?
+
+**Extra:** `broad_street.buffer(100)` makes a circle with a radius of 100 metres around the pump. Draw it on a map with the deaths.
+:::
+
+::: {#answer3 .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+`deaths.distance(broad_street) <= 100` is `True` for the addresses within 100 metres, and putting it in square brackets keeps only those rows:
+
+```{python}
+broad_street = pumps.geometry.iloc[0]
+within_100m = deaths[deaths.distance(broad_street) <= 100]
+deaths_near = within_100m["Count"].sum()
+deaths_near, 100 * deaths_near / deaths["Count"].sum()
+```
+
+196 deaths, 40% of the total, were within 100 metres of the Broad Street pump.
+
+For the extra, `.buffer()` makes an area of a fixed distance around a shape. To plot it, put it in a GeoSeries (a column of geometries) with a CRS:
+
+```{python}
+#| fig-alt: "A 100 metre circle around the Broad Street pump, containing many of the deaths"
+circle = gpd.GeoSeries([broad_street.buffer(100)], crs=deaths.crs)
+
+ax = circle.plot(color="orange", alpha=0.3, figsize=(8, 8))
+deaths.plot(ax=ax, color="black", markersize=deaths["Count"] * 10)
+pumps.plot(ax=ax, color="blue", marker="^", markersize=80)
+cx.add_basemap(ax, crs=deaths.crs, source=cx.providers.Esri.WorldStreetMap)
+ax.set_axis_off()
+```
+:::
+
+# Pump catchments
+
+[Which area did each pump serve?]{.lead-question}
+
+In the last section we matched each address to its nearest pump. We can also draw the whole **area** that is closer to each pump than to any other. These areas are called **Voronoi polygons** (or Thiessen polygons). The same method is used today to draw catchment areas, for example for the nearest GP surgery or hospital.
+
+## Voronoi polygons
+
+The outer polygons would stretch out forever, so first we make a box around the data to give them an edge. `total_bounds` gives the smallest and largest x and y values of all the points. We add 50 metres on each side, and shapely's `box()` turns the four values into a rectangle:
+
+```{python}
+from shapely.geometry import box
+
+all_points = pd.concat([deaths.geometry, pumps.geometry])
+xmin, ymin, xmax, ymax = all_points.total_bounds
+study_area = box(xmin - 50, ymin - 50, xmax + 50, ymax + 50)
+```
+
+`pd.concat()` stacks the deaths and the pumps into one column, so that the box covers both.
+
+`voronoi_polygons()` draws a polygon around each pump, out to the edge of the box:
+
+```{python}
+cells = pumps.voronoi_polygons(extend_to=study_area)
+cells
+```
+
+There are 8 polygons, one for each pump. But they are not in the same order as the pumps, so we cannot copy the `pump_id` column across.
+
+## Labelling the polygons
+
+Each polygon contains exactly one pump, so a spatial join can find it. `sjoin()` joins rows whose shapes meet, and `predicate` sets the rule. `predicate="contains"` keeps the pairs where the polygon contains the pump. `.clip()` then trims the polygons to the box:
+
+```{python}
+catchments = gpd.GeoDataFrame(geometry=cells)
+catchments = catchments.sjoin(pumps, predicate="contains").clip(study_area)
+catchments
+```
+
+```{python}
+#| fig-alt: "Soho divided into a polygon around each pump"
+ax = catchments.plot(
+    column="pump_id",
+    categorical=True,
+    legend=True,
+    cmap="tab10",
+    alpha=0.4,
+    edgecolor="black",
+    figsize=(8, 8),
+)
+pumps.plot(ax=ax, color="black", marker="^", markersize=80)
+deaths.plot(ax=ax, color="black", markersize=deaths["Count"] * 5)
+cx.add_basemap(ax, crs=deaths.crs, source=cx.providers.Esri.WorldStreetMap)
+ax.set_axis_off()
+```
+
+## Deaths in each catchment
+
+To count the deaths in each catchment, we join the deaths to the polygons they fall in. By default, `sjoin()` uses `predicate="intersects"`, which keeps the pairs that touch or overlap. We only need the `pump_id` and `geometry` columns of the catchments:
+
+```{python}
+deaths_in_catchment = deaths.sjoin(catchments[["pump_id", "geometry"]])
+deaths_in_catchment.groupby("pump_id")["Count"].sum()
+```
+
+These are the same totals as in section 3. Each polygon is the area nearest its pump, so the two methods must agree. What the polygons add is the areas themselves, including the places where no one died.
+
+::: {.callout-warning icon=false title="Counts or rates?"}
+A map of the number of deaths in each area can mislead, because areas with more people have more deaths. Public health maps usually show **rates**, such as deaths per 1,000 people. We do not know how many people lived near each pump, so we can only map counts here.
+:::
+
+::: {#keypoints4 .callout-tip icon=false title='Key points'}
+- Voronoi polygons divide an area into the parts nearest each point.
+- `voronoi_polygons()` does not keep the input order, so label the polygons with a spatial join.
+- `sjoin()` joins by location. `predicate` sets the rule, such as `"intersects"` or `"contains"`.
+- A map shaded by a value for each area is a **choropleth**. Where you can, map rates rather than counts.
+:::
+
+::: {#exercise4 .callout-note icon=false title='Exercise'}
+Make a map of the catchments, shaded by their number of deaths.
+
+1. Add a `deaths` column to `catchments`. `.map()` looks up each `pump_id` in the totals, and `.fillna(0)` gives 0 to the pumps with no deaths:
+
+    ```{.python}
+    totals = deaths_in_catchment.groupby("pump_id")["Count"].sum()
+    catchments["deaths"] = catchments["pump_id"].map(totals).fillna(0)
+    ```
+
+2. Plot `catchments` with `column="deaths"`, `cmap="Reds"` and `legend=True`. Add the pumps and a background map.
+3. Which catchments had no deaths?
+:::
+
+::: {#answer4 .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+```{python}
+#| fig-alt: "Pump catchments shaded by number of deaths, with the Broad Street catchment darkest"
+totals = deaths_in_catchment.groupby("pump_id")["Count"].sum()
+catchments["deaths"] = catchments["pump_id"].map(totals).fillna(0)
+
+ax = catchments.plot(
+    column="deaths",
+    cmap="Reds",
+    legend=True,
+    edgecolor="black",
+    figsize=(8, 8),
+)
+pumps.plot(ax=ax, color="blue", marker="^", markersize=80)
+cx.add_basemap(ax, crs=deaths.crs, source=cx.providers.Esri.WorldStreetMap)
+ax.set_axis_off()
+```
+
+```{python}
+catchments.loc[catchments["deaths"] == 0, "pump_id"]
+```
+
+Pumps 3 and 6 had no deaths in their catchments. Both are at the edge of the area where deaths were recorded.
+:::
+
+# What the map cannot tell us
+
+[What does this map show, and what does it not?]{.lead-question}
+
+Our analysis points strongly at the Broad Street pump. But a map is a summary, and every summary leaves things out. This section has no new code.
+
+## Distance is not the same as use
+
+People choose a pump for many reasons, such as habit, the taste of the water, or whether it is on their way to work. Distance along the streets is also different from distance in a straight line. For some addresses, the Rupert Street pump was closer in a straight line, but dead ends made the Broad Street pump quicker to reach.
+
+The exceptions were some of Snow's strongest evidence ([University of East Anglia](https://applieddatascience.cmp.uea.ac.uk/02/1/observation-and-visualization-john-snow-and-the-broad-street-pump.html)):
+
+::: {.cards}
+::: {.card}
+**The brewery**
+There were no deaths in the two blocks just east of the pump, where there was a brewery. It had its own well, and the workers drank its beer.
+:::
+::: {.card}
+**The Hampstead widow**
+Susannah Eley had once lived in Broad Street. After moving to Hampstead, she had water from the Broad Street pump delivered every day. She and her niece caught cholera.
+:::
+:::
+
+Neither of these shows up as a cluster on a map. Snow found them by talking to people.
+
+## The limits of the data
+
+- **Where people died, not where they drank:** the map shows home addresses.
+- **Who is missing:** people who caught cholera in Soho but died somewhere else, like Susannah Eley, are not on it.
+- **Accuracy:** Snow drew his map by hand, and our data was traced from it, so the positions are approximate.
+- **Timing:** the outbreak was already slowing when the handle was removed, so the map cannot show that removing it ended the outbreak.
+
+## Correlation, not cause
+
+A cluster of deaths around a pump does not prove that the pump caused them. Snow's case was persuasive because the map fitted with other evidence: the interviews, the exceptions, and the later work of Henry Whitehead, a local curate, who traced the first case to a baby at 40 Broad Street.
+
+## The same questions today
+
+The methods in this course are used in public health today, and the same questions apply:
+
+- **Access:** the straight-line distance to a GP surgery is not the same as the travel time by bus.
+- **Privacy:** health data is usually released for areas, not addresses, to protect people's privacy. The boundaries chosen can change the pattern you see.
+- **Who is counted:** a map only shows the people in the data.
+
+::: {#keypoints5 .callout-tip icon=false title='Key points'}
+- Straight-line distance is not the route people take, or the choice they make.
+- A map shows where events were recorded, not why they happened.
+- Snow's map was persuasive because it fitted with other evidence.
+- Ask who and what is missing from any map.
+:::
+
+::: {#exercise5 .callout-note icon=false title='Exercise'}
+Pick one question, and write your answer in the chat:
+
+1. If you only had the catchment map, and no interviews, what could you wrongly conclude?
+2. What extra data would make the analysis stronger?
+3. Think of location data from your own work. What would a map of it leave out?
+:::
+
+::: {#answer5 .callout-caution icon=false title='Answer (click to open)' collapse="true"}
+There is no single right answer. Some points to consider:
+
+1. That everyone used their nearest pump, or that the pump caused the deaths. You would also miss the exceptions, which were some of the strongest evidence.
+2. Where each person got their water, walking distances along the streets of 1854, the date of each death, and the number of people living at each address. Without the population, you cannot tell a high *rate* of deaths from a crowded street.
+3. Common answers include people missing from the data, when things happened, and the reasons behind people's choices.
+:::
+
+# Summary {.unnumbered}
+
+In this course you have used geopandas to recreate John Snow's analysis:
+
+| Task | Code |
+|---|---|
+| Read a file | `gpd.read_file("file.shp")` |
+| Check the CRS | `gdf.crs` |
+| Label the CRS | `gdf.set_crs(27700, allow_override=True)` |
+| Convert the CRS | `gdf.to_crs(4326)` |
+| Static map | `gdf.plot(ax=ax)` |
+| Background map | `cx.add_basemap(ax, crs=gdf.crs, source=...)` |
+| Interactive map | `gdf.explore(m=m)` |
+| Distance | `gdf.distance(shape)` |
+| Nearest join | `gdf.sjoin_nearest(other, distance_col="distance")` |
+| Join by location | `gdf.sjoin(other, predicate="intersects")` |
+| Area around a shape | `shape.buffer(100)` |
+| Voronoi polygons | `gdf.voronoi_polygons(extend_to=area)` |
+
+## Next steps {.unnumbered}
+
+- [GeoPandas user guide](https://geopandas.org/en/stable/docs/user_guide.html)
+- [*Python for Geographic Data Analysis*](https://pythongis.org/), a free online book
+- [*Geographic Data Science with Python*](https://geographicdata.science/book/intro.html), a free online book on spatial statistics
+- UK boundaries, such as local authorities and LSOAs, from the [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/)
+
+## Credits {.unnumbered}
+
+Developed by the [Jean Golding Institute](https://www.bristol.ac.uk/golding/). Data digitised from John Snow's map by [Robin Wilson](https://johnsnow.rtwilson.com/).

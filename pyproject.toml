@@ -1,0 +1,17 @@
+[project]
+name = "geospatial-python"
+version = "1.0.0"
+description = "JGI training course: Geospatial Python"
+readme = "README.md"
+requires-python = ">=3.12"
+# Packages to render the course and run tests/check_notes.py.
+# Attendees use Google Colab and do not need these.
+dependencies = [
+    "contextily",
+    "folium",
+    "geopandas>=1.0",
+    "jupyter",
+    "mapclassify",
+    "matplotlib",
+    "quarto-cli",
+]

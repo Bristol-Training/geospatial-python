@@ -1,0 +1,65 @@
+# Course settings shared by every page. Colours, logo and fonts are in
+# _brand.yml; custom styles are in custom.scss.
+
+project:
+  type: website
+  # Rendered site goes in docs/, which GitHub Pages publishes (see README)
+  output-dir: docs
+  # .nojekyll stops GitHub Pages running the site through Jekyll
+  resources:
+    - .nojekyll
+  render:
+    - index.qmd
+    - slides.qmd
+    - instructor.qmd
+
+author: "Jean Golding Institute"
+
+website:
+  title: "Geospatial Python"
+  # No menu items: the home page has the links. The navbar shows the title
+  # (which links back to the home page) and a GitHub icon on the right.
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/Bristol-Training/geospatial-python
+        aria-label: GitHub repository
+  page-footer: "[Jean Golding Institute](https://www.bristol.ac.uk/golding/) © CC-BY 4.0"
+
+# Website pages (index, instructor)
+format:
+  html:
+    theme: [cosmo, custom.scss]
+    toc: true
+    toc-depth: 2
+    toc-expand: 1
+    # explicit grid so the right-hand contents column keeps its width
+    grid:
+      sidebar-width: 250px
+      body-width: 1000px
+      margin-width: 250px
+      gutter-width: 1.5rem
+    toc-title: "Contents"
+    # external links open in a new tab (internal links on index.qmd set target="_blank" themselves)
+    link-external-newwindow: true
+    number-sections: true
+    highlight-style: github
+    fig-width: 7
+    fig-height: 6
+
+  # Slides
+  revealjs:
+    footer: "[Jean Golding Institute](https://www.bristol.ac.uk/golding/) © CC-BY 4.0"
+    slide-number: true
+    # keep slide changes out of the browser history, so Back leaves the slides
+    history: false
+    code-line-numbers: false
+    # wrap long lines instead of scrolling sideways
+    code-overflow: wrap
+    highlight-style: github
+    transition: none
+    fig-width: 8
+    fig-height: 4.5
+    fig-align: center
+    theme: [default, custom.scss]
+    logo: assets/UoB_RGB_24.png

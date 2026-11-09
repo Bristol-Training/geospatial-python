@@ -1,0 +1,18 @@
+# Colours and fonts shared by every page and the slides.
+# Custom styles are in custom.scss. Edit the palette below to re-colour the whole course.
+
+meta:
+  name: Jean Golding Institute
+
+color:
+  palette:
+    red: "#a6192e"
+    grey: "#e5e6e5"
+  primary: red
+  link: red
+
+typography:
+  headings:
+    color: red
+    weight: 700
+
