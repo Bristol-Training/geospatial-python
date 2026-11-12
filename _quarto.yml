@@ -3,22 +3,24 @@
 
 project:
   type: website
-  # Rendered site goes in docs/, which GitHub Pages publishes (see README)
   output-dir: docs
-  # .nojekyll stops GitHub Pages running the site through Jekyll
-  resources:
-    - .nojekyll
   render:
     - index.qmd
+    - notes.qmd
     - slides.qmd
     - instructor.qmd
 
 author: "Jean Golding Institute"
 
+# Keep the results of code chunks, and only re-run a page's code when that
+# page changes. The GitHub Action stores the results between runs.
+execute:
+  freeze: auto
+
 website:
   title: "Geospatial Python"
-  # No menu items: the home page has the links. The navbar shows the title
-  # (which links back to the home page) and a GitHub icon on the right.
+  # No menu items: the home page has the links. The navbar shows the logo
+  # and title (which link back to the home page), and a GitHub icon on the right.
   navbar:
     right:
       - icon: github
@@ -26,7 +28,7 @@ website:
         aria-label: GitHub repository
   page-footer: "[Jean Golding Institute](https://www.bristol.ac.uk/golding/) © CC-BY 4.0"
 
-# Website pages (index, instructor)
+# Website pages (index, notes, instructor)
 format:
   html:
     theme: [cosmo, custom.scss]
@@ -62,4 +64,3 @@ format:
     fig-height: 4.5
     fig-align: center
     theme: [default, custom.scss]
-    logo: assets/UoB_RGB_24.png

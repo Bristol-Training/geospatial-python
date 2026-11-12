@@ -4,8 +4,8 @@ version = "1.0.0"
 description = "JGI training course: Geospatial Python"
 readme = "README.md"
 requires-python = ">=3.12"
-# Packages to render the course and run tests/check_notes.py.
-# Attendees use Google Colab and do not need these.
+# Packages to render the course, run tests/check_notes.py and redraw the
+# diagrams (assets/make_diagrams.py). Attendees use Google Colab instead.
 dependencies = [
     "contextily",
     "folium",
@@ -13,5 +13,9 @@ dependencies = [
     "jupyter",
     "mapclassify",
     "matplotlib",
-    "quarto-cli",
+    "scipy",
 ]
+
+[dependency-groups]
+# Quarto, for rendering locally. The GitHub Action installs its own.
+dev = ["quarto-cli"]

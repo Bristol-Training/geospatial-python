@@ -1,7 +1,12 @@
 ---
 title: "Geospatial Python"
 subtitle: "Mapping John Snow's cholera outbreak"
-format: revealjs
+format:
+  revealjs:
+    title-slide-attributes:
+      data-background-image: assets/snow-map-1854.jpg
+      data-background-size: cover
+      data-background-opacity: "0.15"
 execute:
   echo: true
   eval: false
@@ -9,68 +14,94 @@ execute:
   message: false
 ---
 
-## Today's mission {.center}
+## Housekeeping
 
-::: {.big .center}
-Find the source of<br>a cholera outbreak,<br>with a map.
+::: {.small}
+- Please keep your **mic on mute** unless you're talking
+- Feel free to turn your **camera** on if you want to
+- We love **questions**! There's no such thing as a silly question here
+- Don't be afraid of **error messages**: they're totally normal, and really helpful
+- We'll take a **break** after about 1 hour 20 minutes
+- If you need an extra break at any point, that's okay: the session is recorded
 :::
 
 ::: notes
-Welcome and housekeeping (break halfway, chat for questions). The notes have everything in detail; the slides and live coding carry the session.
+Welcome everyone. Introduce yourself and the helpers. Point out the chat for questions.
 :::
 
 ## How today works
 
 ::: {.medium}
-We code. You code.
+Some theory. Then code it together.
 :::
 
 ::: {.small}
-- We work in **Google Colab**: nothing to install
-- Type along in **your own copy** of the notebook: don't just watch
-- Each section ends with a short **"Your turn"** exercise
-- Errors are normal. Read them out loud!
-- Stuck? **Type in the chat**
-- The **notes** have all the code, and the answers
+- Each section starts with the **ideas** behind it
+- Then we **live code** together: type along in your own copy of the notebook
+- Then a short **exercise** on your own, and the answer
+- Nothing to install: we use **Google Colab**, so you just need a Google account
+- The **notes** have all the code, exercises and answers: try each exercise before looking
+- We learn through one **case study**
 :::
 
-## The journey
+## Today's mission {.big .center}
 
-::: {.cards .journey}
+::: {.center}
+Can you find the source of a cholera outbreak, using a map?
+:::
+
+::: notes
+Pose the question and leave it hanging. We answer it in section 3, and question the answer in section 5.
+:::
+
+## Session overview
+
+::: {.cards .journey .grid3}
+::: {.card .fragment}
+**The story**
+*Soho, 1854*
+Cholera, two theories, and John Snow's map
+:::
 ::: {.card .fragment}
 **1 · Location data**
 *What do the numbers mean?*
-GeoDataFrames and coordinate reference systems
-[Your turn: where is pump 0?]{.hands-on}
+Vector and raster data, GeoDataFrames and coordinate reference systems
+[Exercise: where is pump 0?]{.hands-on}
 :::
 ::: {.card .fragment}
 **2 · Making maps**
 *How do we show it?*
 Layers, background maps and interactive maps
-[Your turn: an interactive map]{.hands-on}
+[Exercise: an interactive map]{.hands-on}
 :::
 ::: {.card .fragment}
 **3 · The nearest pump**
 *Which pump was closest?*
-Spatial joins and distances
-[Your turn: deaths within 100 metres]{.hands-on}
+Spatial relationships and spatial joins
+[Exercise: deaths within 100 metres]{.hands-on}
 :::
 ::: {.card .fragment}
 **4 · Pump catchments**
 *Which area did each pump serve?*
-Voronoi polygons and choropleths
-[Your turn: a map of catchments]{.hands-on}
+Voronoi polygons and choropleth maps
+[Exercise: a map of catchments]{.hands-on}
+:::
+::: {.card .fragment}
+**5 · What the map cannot tell us**
+*Should we believe it?*
+The evidence beyond the map, and the limits of areas
+[Exercise: question the map]{.hands-on}
 :::
 :::
 
 ::: notes
-Click through the cards. Section 5 is a discussion, with no new code.
+Click through the cards. Sections 1 to 4 each have theory, live coding and an exercise. Section 5 is a discussion, with no new code.
 :::
 
 ## By the end, you will be able to
 
 ::: {.small}
-1. **Load** location data into a GeoDataFrame, and describe how it differs from a pandas DataFrame
+1. **Load** location data into a GeoDataFrame, and **describe** how it differs from a pandas DataFrame
 2. **Explain** what a coordinate reference system (CRS) is, and **check and change** it
 3. **Make** a static map with a background map, and an interactive map
 4. **Join** datasets by location, for example to find the nearest pump to each address
@@ -82,28 +113,166 @@ Click through the cards. Section 5 is a discussion, with no new code.
 Objectives 1 and 2 are section 1, 3 is section 2, 4 is section 3, 5 is section 4 and 6 is section 5. We come back to this list at the end.
 :::
 
-## Soho, 1854
+# [00]{.section-number} The story {.section-divider background-color="var(--jgi-red)"}
+
+[Soho, London, 1854]{.section-question}
+
+## London in the 1850s
 
 :::: {.columns}
 ::: {.column width="55%"}
 ::: {.small}
-- End of August 1854: cholera breaks out in Soho, London
-- Hundreds die within days
-- Most doctors believe in **miasma**: disease spread by "bad air"
-- John Snow thinks it spreads through **water**
-- He visits the households of the dead: most drank from the **Broad Street pump**
-- The pump handle is removed on **8 September 1854**
+- A fast-growing city, with families crowded into old houses
+- Sewage went into **cesspits** under and behind the houses
+- Many people fetched their water from **street pumps**
+- Cholera had already swept through Britain in the 1830s and 1840s
 :::
 :::
 ::: {.column width="45%"}
-::: {.big}
-Today we rebuild his map.
-:::
+![](assets/london-slum-1860s.jpg){fig-alt="Black and white photograph of a run-down London courtyard, with people standing and sitting outside old brick houses"}
+
+[A London slum, 1860s. Wikimedia Commons]{.credit}
 :::
 ::::
 
 ::: notes
-Keep this short (3 min). Save the brewery, the Hampstead widow and Whitehead for section 5. Sources are linked in the notes.
+Set the scene in a minute or two. The point to land: crowded housing, cesspits and shared pumps, side by side.
+:::
+
+## What is cholera?
+
+:::: {.columns}
+::: {.column width="55%"}
+::: {.small}
+- A gut infection caused by the bacterium ***Vibrio cholerae***
+- Spread through **water and food** contaminated with it
+- Causes acute watery diarrhoea, sometimes with vomiting
+- Untreated, severe dehydration can kill **within hours**
+- Today, most cases are treated with oral rehydration solution
+:::
+
+::: {.muted}
+Source: [Global Task Force on Cholera Control](https://www.gtfcc.org/about-cholera/cholera-facts/)
+:::
+:::
+::: {.column width="45%"}
+![](assets/seymour-cholera-1831.jpg){fig-alt="A cartoon of cholera as a giant shrouded figure with skeletal hands and feet, trampling soldiers on a battlefield"}
+
+[*Cholera "Tramples the victors & the vanquished both"*, Robert Seymour, 1831. National Library of Medicine]{.credit}
+:::
+::::
+
+::: notes
+In 1854 nobody knew about the bacterium: it was not isolated until 1883. The cartoon shows how people saw cholera: a huge, looming presence that could strike anyone.
+:::
+
+## Two theories
+
+:::: {.columns}
+::: {.column width="50%"}
+**Miasma**
+
+::: {.bad}
+Disease spreads through **"bad air"**, from rotting matter and filth. Most doctors believed this
+:::
+:::
+::: {.column width="50%"}
+**Water**
+
+::: {.good}
+John Snow, a London physician, thought cholera spread through **contaminated water**
+:::
+:::
+::::
+
+::: {.muted .center}
+The two theories predict different patterns: bad air would spread across a neighbourhood, but water would cluster around its source
+:::
+
+::: notes
+This is the key idea for the course: the theories predict different *spatial* patterns, so a map can help tell them apart.
+:::
+
+## The Broad Street outbreak
+
+::: {.flow .one-line}
+[**30 Aug 1854**<br>Outbreak starts]{.step .fragment} [→]{.arrow .fragment} [**1 Sep**<br>143 fatal cases]{.step .fragment} [→]{.arrow .fragment} [**Early Sep**<br>Snow visits homes]{.step .fragment} [→]{.arrow .fragment} [**7 Sep**<br>Evidence to parish]{.step .fragment} [→]{.arrow .fragment} [**8 Sep**<br>Handle removed]{.step .fragment}
+:::
+
+::: {.small}
+- Snow studied the death records, and asked households where they got their water
+- Most of the dead had lived near, and drunk from, the **Broad Street pump**
+:::
+
+::: {.muted}
+Sources: [UCLA Department of Epidemiology](https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_e.html), [CDC](https://www.cdc.gov/mmwr/preview/mmwrhtml/mm5334a1.htm)
+:::
+
+::: notes
+"143 fatal cases begin" means 143 people who fell ill on 1 September went on to die. The handle was removed after Snow met the parish's Board of Guardians on the evening of 7 September.
+:::
+
+## Snow's map
+
+:::: {.columns}
+::: {.column width="60%"}
+![](assets/snow-map-1854-colour.jpg){fig-alt="John Snow's map of Soho, with each cholera death drawn as a small black bar stacked at its address, clustered around Broad Street"}
+:::
+::: {.column width="40%"}
+::: {.small}
+- Each **black bar** is one death, stacked at the address
+- The **pumps** are marked on the map
+- Published in 1855, in the second edition of Snow's *On the Mode of Communication of Cholera*
+:::
+
+[John Snow's map. Wellcome Collection]{.credit}
+:::
+::::
+
+::: notes
+Ask: what do you notice? Let people say "they cluster around one place" before you point to Broad Street.
+:::
+
+## The idea catches on
+
+:::: {.columns}
+::: {.column width="45%"}
+![](assets/deaths-dispensary-1866.jpg){fig-alt="Cartoon of a skeleton working a street water pump, while poor women and children queue to fill jugs"}
+:::
+::: {.column width="55%"}
+::: {.small}
+*Death's Dispensary*, from the magazine *Fun*, 1866: Death himself works the pump
+
+Snow died in 1858. Within a decade, the link between dirty water and disease was a subject for cartoons
+:::
+
+[George J. Pinwell, 1866. Public domain]{.credit}
+:::
+::::
+
+## Our data
+
+::: {.cards}
+::: {.card}
+**250**
+addresses where one or more people died
+:::
+::: {.card}
+**489**
+deaths
+:::
+::: {.card}
+**8**
+water pumps
+:::
+:::
+
+::: {.small}
+Robin Wilson traced the deaths and pumps from Snow's map, and lined them up with a modern map: [johnsnow.rtwilson.com](https://johnsnow.rtwilson.com/)
+:::
+
+::: notes
+These numbers come from the data. We get them ourselves in section 1.
 :::
 
 ## Getting set up {.demo-slide}
@@ -136,6 +305,87 @@ Share the home page link in the chat, and wait for thumbs up before moving on. S
 
 [How is location data stored, and what do the numbers mean?]{.section-question}
 
+## What makes data geospatial?
+
+::: {.cards .grid2}
+::: {.card}
+**Where**
+A location: a point, a line or an area, given as coordinates
+:::
+::: {.card}
+**What**
+The values we know about that place: the number of deaths at an address
+:::
+::: {.card}
+**Health examples**
+Patients' postcodes, GP surgeries, hospital catchments, air pollution
+:::
+::: {.card}
+**What it adds**
+Location links datasets that share nothing else, and shows patterns a table can hide
+:::
+:::
+
+## Why location matters
+
+::: {.medium .center}
+"Everything is related to everything else, but near things are more related than distant things."
+:::
+
+::: {.muted .center}
+Waldo Tobler's "first law of geography", 1970
+:::
+
+::: {.small}
+- Things close together tend to be alike: neighbouring streets share the same air, water and services
+- So a **cluster** that stands out from its surroundings is worth explaining
+- In 1854, a cluster of deaths around one pump pointed to the water
+:::
+
+## Two ways to store the world
+
+![](assets/diagrams/vector-raster.png){fig-alt="Left: a map with a square polygon, a line and three points. Right: the same area as a grid of cells, shaded from pale to dark red" width="70%" fig-align="center"}
+
+::: {.doc-table}
+
+| | Vector | Raster |
+|---|---|---|
+| **Stores** | Shapes, each with a row of values | A grid of cells, each with a value |
+| **Best for** | Things with edges: buildings, roads, addresses | Things that vary smoothly: air pollution, temperature |
+| **Files** | Shapefile, GeoPackage, GeoJSON | GeoTIFF |
+| **Python** | geopandas | rasterio, xarray |
+
+:::
+
+::: notes
+Today is all vector data. The one raster we use is SnowMap.tif, a scan of Snow's map, as a background in an optional extra. A raster's resolution (its cell size) sets the smallest detail it can show.
+:::
+
+## Vector data: points, lines and polygons
+
+::: {.cards}
+::: {.card}
+**Points**
+An address, a pump, a hospital
+:::
+::: {.card}
+**Lines**
+A road, a river, a bus route
+:::
+::: {.card}
+**Polygons**
+A building, a postcode area, a catchment
+:::
+:::
+
+::: {.flow .one-line}
+[A table of values]{.step .light} [+]{.arrow} [A geometry column]{.step} [=]{.arrow} [A GeoDataFrame]{.step}
+:::
+
+::: notes
+Today we use points (deaths and pumps) and, in section 4, polygons. A GeoDataFrame is a pandas DataFrame with one extra column, so everything they know about pandas still works.
+:::
+
 ## Reading the data {.demo-slide}
 
 [Together]{.demo-tag} [live code]{.demo-meta}
@@ -161,26 +411,44 @@ Several files that travel together: `.shp`, `.dbf`, `.shx`, `.prj`
 :::
 
 ::: notes
-Live code: read both files, deaths.head(), type(deaths), len(deaths) and Count.sum() (250 and 489), value_counts(). Then pumps: 8 rows, geometry only, so add pump_id. deaths.plot(), and ask: what are the numbers on the axes?
+Live code: read both files, deaths.head(), type(deaths), len(deaths) and Count.sum() (250 and 489), value_counts(). Then pumps: 8 rows, geometry only, so add pump_id with range(len(pumps)). deaths.plot(), and ask: what are the numbers on the axes?
 :::
 
-## What do the numbers mean?
+## Coordinate reference systems
 
-```{python}
-deaths.crs
-```
+![](assets/diagrams/coordinate-systems.png){fig-alt="Left: a globe with lines of latitude and longitude, and the Broad Street pump at 51.5133 north, 0.1367 west. Right: a flat grid in metres, with the same pump at 529,397 metres east and 181,025 metres north" width="70%" fig-align="center"}
 
-::: {.doc-table}
-
-| CRS | EPSG | Units | Good for |
-|---|---|---|---|
-| British National Grid | 27700 | metres | Distances and areas in Great Britain |
-| WGS 84 (latitude, longitude) | 4326 | degrees | GPS, sharing data, web maps |
-
+::: {.small}
+A coordinate is just two numbers. The **CRS** says what they are measured from, and in what units
 :::
 
 ::: notes
-A coordinate reference system says where the numbers are measured from and in what units. British National Grid: metres east and north of a point south-west of the Isles of Scilly. The first address is about 529 km east and 181 km north.
+Same pump, two sets of numbers. On the left, angles on a curved Earth. On the right, metres on a flat grid.
+:::
+
+## Geographic or projected?
+
+::: {.cards .grid2}
+::: {.card}
+**Geographic CRS**
+Latitude and longitude, in **degrees**, on the curved Earth. GPS and web maps use WGS 84 (EPSG:4326)
+:::
+::: {.card}
+**Projected CRS**
+The Earth flattened onto a grid, in **metres**. The British National Grid (EPSG:27700) is made for Great Britain
+:::
+:::
+
+::: {.bad .compact}
+✘ Flattening the Earth always distorts something: area, shape, distance or direction. No map keeps them all
+:::
+
+::: {.good .compact}
+✔ Measure distances and areas in a projected CRS made for your area
+:::
+
+::: notes
+A degree of longitude is about 111 km at the equator and about 69 km in London, so distances in degrees are meaningless. EPSG codes are ID numbers for CRSs: look them up at epsg.io.
 :::
 
 ## set_crs() or to_crs()?
@@ -207,7 +475,7 @@ deaths_latlon = deaths.to_crs(4326)
 :::
 
 ::: notes
-Live code the distance from each death to pump 0 in both CRSs, and show the warning geopandas gives for degrees. One degree of longitude is about 69 km in London, and about 111 km at the equator. Also note: POINT (x y) puts longitude first.
+Live code the distance from each death to pump 0 in both CRSs, and show the warning geopandas gives for degrees. Also note: POINT (x y) puts longitude first.
 :::
 
 ## Where is pump 0? {.demo-slide}
@@ -243,9 +511,55 @@ About **51.5133, -0.1367**: Broadwick Street, called Broad Street in 1854
 A replica pump stands on Broadwick Street today. From now on, pump 0 is "Broad Street".
 :::
 
+## Learn more about location data
+
+::: {.small}
+- [GeoPandas: introduction](https://geopandas.org/en/stable/getting_started/introduction.html)
+- [GeoPandas: managing projections](https://geopandas.org/en/stable/docs/user_guide/projections.html)
+- [*Python for Geographic Data Analysis*](https://pythongis.org/): vector and raster data, and CRSs
+- [epsg.io](https://epsg.io/): look up any CRS
+:::
+
 # [02]{.section-number} Making maps {.section-divider background-color="var(--jgi-red)"}
 
 [How do we turn a table of points into a map that people can read?]{.section-question}
+
+## What makes a good map?
+
+::: {.cards .grid2}
+::: {.card}
+**The data**
+The layer you want people to look at, drawn so it stands out
+:::
+::: {.card}
+**Context**
+A background map, so readers know where they are
+:::
+::: {.card}
+**A key**
+A legend or caption that says what the symbols mean
+:::
+::: {.card}
+**Credit**
+Where the data and the background map came from
+:::
+:::
+
+## Showing values on a map
+
+::: {.doc-table}
+
+| | Good for | In geopandas | On Snow's map |
+|---|---|---|---|
+| **Size** | Amounts, such as a count | `markersize=` | The height of each stack of bars |
+| **Colour** | Amounts, or categories | `column=`, `cmap=` | Not used |
+| **Shape** | Different kinds of thing | `marker=` | Bars for deaths, dots for pumps |
+
+:::
+
+::: {.muted .center}
+Snow showed the number of deaths at each address by the height of the stack: we will use the size of each dot
+:::
 
 ## Layers {.demo-slide}
 
@@ -281,12 +595,12 @@ ax.set_axis_off()
 ```
 
 ::: {.small}
-- `crs=deaths.crs` fits the tiles to our data
+- `crs=deaths.crs` fits the map tiles to our data
 - Keep the attribution in the corner
 :::
 
 ::: notes
-If time, show the optional extra in the notes: source="SnowGIS_SHP/SnowMap.tif" puts the points on Snow's own map.
+If time, show the optional extra in the notes: source="SnowGIS_SHP/SnowMap.tif" puts the points on Snow's own map, a raster.
 :::
 
 ## An interactive map
@@ -319,18 +633,12 @@ Zoom in and hover over points. explore() converts to the web map CRS for you.
 
 [Your turn]{.your-turn-tag} [7 min]{.demo-meta}
 
-1. Save the map of the deaths as `m`
-2. Add the pumps: `pumps.explore(m=m, color="blue")`
-3. Name the layers (`name="Deaths"`, `name="Pumps"`) and add a layer control:
-
-```{python}
-import folium
-
-folium.LayerControl().add_to(m)
-m
-```
-
+::: {.small}
+1. Save the map of the deaths as `m`, with `name="Deaths"`
+2. Add the pumps: `pumps.explore(m=m, color="blue", name="Pumps")`
+3. Add a layer control: `folium.LayerControl().add_to(m)`, after `import folium`
 4. Hover to find the address with the **most deaths**. Is it near a pump?
+:::
 
 ::: {.muted}
 Exercise 2 in the notes.
@@ -360,6 +668,14 @@ worst["geometry"].distance(pumps.geometry.iloc[0])
 **15 deaths**, about **17 metres** from the Broad Street pump
 :::
 
+## Learn more about maps
+
+::: {.small}
+- [GeoPandas: mapping and plotting](https://geopandas.org/en/stable/docs/user_guide/mapping.html)
+- [GeoPandas: interactive maps](https://geopandas.org/en/stable/docs/user_guide/interactive_mapping.html)
+- [contextily](https://contextily.readthedocs.io/): background maps
+:::
+
 ## Break {.center}
 
 ::: {.big .center}
@@ -374,6 +690,39 @@ About 1 hour 20 minutes in. Colab may disconnect if left idle: if so, rerun the 
 
 [Which pump was closest to each death?]{.section-question}
 
+## Spatial relationships
+
+![](assets/diagrams/spatial-joins.png){fig-alt="Left: points coloured by which of three areas they fall in. Right: points joined by lines to the nearest of three pumps, and coloured to match" width="70%" fig-align="center"}
+
+::: {.small}
+Two shapes can **intersect**, one can **contain** the other, or they can be a **distance** apart. These relationships let us join tables by location
+:::
+
+## Joining tables
+
+::: {.cards}
+::: {.card}
+**Join by a column**
+`pd.merge()`: rows with the same value in a shared column, such as a patient ID
+:::
+::: {.card}
+**Join by location**
+`sjoin()`: rows whose shapes intersect, or where one contains the other
+:::
+::: {.card}
+**Join to the nearest**
+`sjoin_nearest()`: each row to the closest row of the other table
+:::
+:::
+
+::: {.muted .center}
+A spatial join links datasets that share nothing but their location
+:::
+
+::: notes
+For example, a spatial join can give each patient's postcode the area it is in, so it can be matched to deprivation data for that area.
+:::
+
 ## Joining by location {.demo-slide}
 
 [Together]{.demo-tag} [live code]{.demo-meta}
@@ -383,19 +732,14 @@ nearest = deaths.sjoin_nearest(pumps, distance_col="distance")
 nearest.head()
 ```
 
-::: {.cards}
-::: {.card}
-**pandas join**
-Match rows on a shared column, like an ID
-:::
-::: {.card}
-**Spatial join**
-Match rows by **location**
-:::
+::: {.small}
+- `index_right`: the pump's row (added by every spatial join)
+- `pump_id`: the pump's number
+- `distance`: in metres, as the data is in the British National Grid
 :::
 
 ::: notes
-Explain the new columns: index_right (added by every spatial join), pump_id, distance (metres, because we are in the British National Grid). Straight-line distance: flag that we come back to this in section 5.
+Straight-line distance: flag that we come back to this in section 5.
 :::
 
 ## Deaths per pump
@@ -448,11 +792,49 @@ deaths_near, 100 * deaths_near / deaths["Count"].sum()
 **196 deaths**, 40% of the total, within 100 metres of the pump
 :::
 
+## Learn more about spatial joins
+
+::: {.small}
+- [GeoPandas: merging data](https://geopandas.org/en/stable/docs/user_guide/mergingdata.html)
+- [Shapely: spatial predicates](https://shapely.readthedocs.io/en/stable/manual.html#binary-predicates)
+:::
+
 # [04]{.section-number} Pump catchments {.section-divider background-color="var(--jgi-red)"}
 
 [Which area did each pump serve?]{.section-question}
 
-## Voronoi polygons {.demo-slide}
+## Voronoi polygons
+
+:::: {.columns}
+::: {.column width="45%"}
+![](assets/diagrams/voronoi.png){fig-alt="Five pumps, each inside its own coloured area. Every point in an area is closer to that area's pump than to any other"}
+:::
+::: {.column width="55%"}
+::: {.small}
+- Each polygon is the area **closest** to one point
+- The edges are where you are the same distance from two points
+- Named after Georgy Voronoy (1908). Also called **Thiessen polygons**, after a meteorologist who used them for rainfall in 1911
+- Used today for catchments, such as the nearest GP surgery or hospital
+:::
+:::
+::::
+
+## Snow drew one too
+
+::: {.medium}
+For the parish's inquiry, Snow redrew his map with a **dotted line** around the area closer to the Broad Street pump than to any other
+:::
+
+::: {.small}
+- He measured the distance **along the streets**, not in a straight line
+- It may be the earliest use of this kind of diagram
+:::
+
+::: {.muted}
+Source: [UCLA Department of Epidemiology](https://epi-snow.ph.ucla.edu/Stream2_BSPoutbreak_f.html)
+:::
+
+## Voronoi polygons in geopandas {.demo-slide}
 
 [Together]{.demo-tag} [live code]{.demo-meta}
 
@@ -469,12 +851,12 @@ catchments = catchments.sjoin(pumps, predicate="contains").clip(study_area)
 ```
 
 ::: {.small}
-- Each polygon is the area **nearest** to one pump
+- The box gives the outer polygons an edge
 - The polygons are **not** in the order of the pumps, so a spatial join labels them
 :::
 
 ::: notes
-Show cells first, then the join, then the plot coloured by pump_id with the pumps and deaths on top. The same method answers questions like "which GP surgery is nearest?".
+Show cells first, then the join, then the plot coloured by pump_id with the pumps and deaths on top.
 :::
 
 ## Deaths in each catchment
@@ -490,6 +872,27 @@ The same totals as the nearest pump. Why?
 
 ::: notes
 Wait for answers in the chat. Each polygon is the area nearest its pump, so the methods must agree. The polygons add the areas, including where no one died.
+:::
+
+## Choropleth maps
+
+::: {.cards .grid2}
+::: {.card}
+**What it is**
+A map of areas, each shaded by a value
+:::
+::: {.card}
+**Counts mislead**
+Areas with more people have more deaths, whatever the cause
+:::
+::: {.card}
+**Rates are fairer**
+Deaths per 1,000 people compares areas with different populations
+:::
+::: {.card}
+**Our data**
+We have no population figures, so we can only map counts
+:::
 :::
 
 ## A map of catchments {.demo-slide}
@@ -527,19 +930,19 @@ ax.set_axis_off()
 ```
 
 ::: {.small}
-Pumps **3** and **6** had no deaths. A map coloured by a value for each area is a **choropleth**.
+Pumps **3** and **6** had no deaths in their catchments
 :::
 
 # [05]{.section-number} What the map cannot tell us {.section-divider background-color="var(--jgi-red)"}
 
-[What does this map show, and what does it not?]{.section-question}
+[Should we believe it?]{.section-question}
 
-## The exceptions
+## The evidence beyond the map
 
 ::: {.cards .grid2}
 ::: {.card .fragment}
 **Straight lines**
-For some addresses, the Rupert Street pump was closer in a straight line, but the streets made Broad Street quicker to reach
+For some addresses, the Rupert Street pump was closer in a straight line, but dead ends made Broad Street quicker to reach
 :::
 ::: {.card .fragment}
 **The brewery**
@@ -551,12 +954,12 @@ Susannah Eley had Broad Street water delivered to Hampstead every day. She and h
 :::
 ::: {.card .fragment}
 **The first case**
-Henry Whitehead, a local curate, traced the first case to a baby at 40 Broad Street
+Henry Whitehead, a local curate, traced it to a baby at 40 Broad Street. Her mother emptied washing water into a cesspit by the pump
 :::
 :::
 
 ::: notes
-None of these shows up as a cluster on a map: Snow found them by talking to people. His case was persuasive because the map fitted with this evidence.
+None of these shows up as a cluster on a map: they came from talking to people. Snow's case was persuasive because the map fitted with this evidence. The cesspit's cracked lining leaked into the pump's well. Sources are linked in the notes.
 :::
 
 ## The limits of the data
@@ -564,9 +967,21 @@ None of these shows up as a cluster on a map: Snow found them by talking to peop
 ::: {.small}
 - **Where people died, not where they drank**: home addresses only
 - **Who is missing**: people who died somewhere else, like Susannah Eley
-- **Digitised by hand**: the positions are approximate
-- **The timing**: the outbreak was already slowing when the handle was removed
+- **Traced by hand**: the positions are approximate
+- **Timing**: the outbreak was already slowing when the handle was removed
 - **Correlation, not cause**: a cluster near a pump does not prove the pump caused it
+:::
+
+## The boundaries change the picture
+
+![](assets/diagrams/areal-units.png){fig-alt="The same set of points counted in four large squares and in nine smaller squares. With four squares, one corner looks worst; with nine, the centre does" width="80%" fig-align="center"}
+
+::: {.small}
+The **modifiable areal unit problem**: the same data, counted in different areas, can show a different pattern
+:::
+
+::: notes
+Health data is usually released for areas, not addresses, to protect privacy. Both the size of the areas and where their boundaries fall can change where the "hotspot" appears. Our catchments are one choice of areas.
 :::
 
 ## Question the map {.demo-slide}
@@ -584,39 +999,44 @@ Exercise 5 in the notes.
 :::
 
 ::: notes
-Read out a few answers. Draw out: no population, so no rates (a crowded street has more deaths); no dates; no record of where people got water; walking distance on 1854 streets. Today: health data is released for areas, not addresses, and the boundaries change the pattern.
+Read out a few answers. Draw out: no population, so no rates (a crowded street has more deaths); no dates; no record of where people got water; walking distance on 1854 streets; boundaries change the pattern.
 :::
 
 # Summary {.section-divider background-color="var(--jgi-red)"}
 
 ## What you can now do
 
-::: {.doc-table}
-
-| Task | Code |
-|---|---|
-| Read a file | `gpd.read_file("file.shp")` |
-| Check, label, convert the CRS | `.crs`, `.set_crs()`, `.to_crs()` |
-| Static map, background map | `.plot(ax=ax)`, `cx.add_basemap()` |
-| Interactive map | `.explore(m=m)` |
-| Nearest join | `.sjoin_nearest(other, distance_col="distance")` |
-| Join by location | `.sjoin(other, predicate="intersects")` |
-| Areas | `.buffer()`, `.voronoi_polygons()` |
-
+::: {.small}
+- ✔ **Load** location data, and **explain** vector and raster data
+- ✔ **Check and change** a CRS, and measure in metres
+- ✔ **Make** static and interactive maps
+- ✔ **Join** tables by location
+- ✔ **Draw** catchments, and summarise data within them
+- ✔ **Question** what a map shows
 :::
 
 ::: notes
-Go back to the six objectives slide and tick them off.
+Go back to the objectives slide and tick them off.
 :::
 
-## Next steps
+## Where next?
 
 ::: {.small}
 - [GeoPandas user guide](https://geopandas.org/en/stable/docs/user_guide.html)
 - [*Python for Geographic Data Analysis*](https://pythongis.org/) (free online book)
-- [*Geographic Data Science with Python*](https://geographicdata.science/book/intro.html) (free online book)
+- [*Geographic Data Science with Python*](https://geographicdata.science/book/intro.html) (free online book, including spatial statistics)
 - UK boundaries: [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/)
-- Data: [Robin Wilson's John Snow data](https://johnsnow.rtwilson.com/)
+- [Bristol Training courses](https://bristol-training.github.io/)
+:::
+
+## Image credits
+
+::: {.small}
+- John Snow's map: public domain. Colour scan: Wellcome Collection
+- A London slum, 1860s: Wikimedia Commons, public domain
+- *Cholera "Tramples the victors & the vanquished both"*: Robert Seymour, 1831. National Library of Medicine, public domain
+- *Death's Dispensary*: George J. Pinwell, *Fun*, 1866, public domain
+- Diagrams: Jean Golding Institute, CC BY 4.0
 :::
 
 ## Thank you {.center}

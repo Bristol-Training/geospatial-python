@@ -1,0 +1,58 @@
+# Render the course website and publish it to the gh-pages branch.
+# Runs on every push to main, and can be started by hand from the Actions tab
+# (Actions > Publish website > Run workflow).
+#
+# Code chunks are frozen (`freeze: auto` in _quarto.yml): the results are kept
+# in this Action's cache, and a page's code only re-runs when that page changes.
+# The Python packages come from pyproject.toml and uv.lock, so the website is
+# built with exactly the versions tested locally.
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Frozen code results from earlier runs. An exact match means no page
+      # has changed, so nothing needs to run.
+      - name: Restore frozen code results
+        id: freeze
+        uses: actions/cache@v4
+        with:
+          path: _freeze
+          key: freeze-${{ hashFiles('*.qmd', '_quarto.yml', 'uv.lock') }}
+          restore-keys: freeze-
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      # Installs Python and the packages in uv.lock into .venv. Quarto itself
+      # comes from the next step, so skip the quarto-cli package (--no-dev).
+      - name: Install Python packages
+        run: uv sync --locked --no-dev
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and publish to gh-pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QUARTO_PYTHON: ${{ github.workspace }}/.venv/bin/python

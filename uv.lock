@@ -748,6 +748,11 @@ dependencies = [
     { name = "jupyter" },
     { name = "mapclassify" },
     { name = "matplotlib" },
+    { name = "scipy" },
+]
+
+[package.dev-dependencies]
+dev = [
     { name = "quarto-cli" },
 ]
 
@@ -759,8 +764,11 @@ requires-dist = [
     { name = "jupyter" },
     { name = "mapclassify" },
     { name = "matplotlib" },
-    { name = "quarto-cli" },
+    { name = "scipy" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "quarto-cli" }]
 
 [[package]]
 name = "h11"

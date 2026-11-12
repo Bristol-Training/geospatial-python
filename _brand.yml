@@ -1,4 +1,4 @@
-# Colours and fonts shared by every page and the slides.
+# Colours, logo, fonts shared by every page and the slides.
 # Custom styles are in custom.scss. Edit the palette below to re-colour the whole course.
 
 meta:
@@ -11,8 +11,16 @@ color:
   primary: red
   link: red
 
+logo:
+  images:
+    uob:
+      path: assets/UoB_RGB_24.png
+      alt: University of Bristol
+  medium: uob
+
 typography:
   headings:
     color: red
     weight: 700
 
+    # Custom components for the website pages (the slide versions are in _quarto.yml)

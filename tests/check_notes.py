@@ -1,4 +1,4 @@
-"""Run the code in the course notes (index.qmd) and check the results.
+"""Run the code in the course notes (notes.qmd) and check the results.
 
 Run it from the course folder:
 
@@ -25,7 +25,7 @@ import matplotlib
 
 matplotlib.use("Agg")  # draw plots without opening windows
 
-NOTES = Path(__file__).resolve().parent.parent / "index.qmd"
+NOTES = Path(__file__).resolve().parent.parent / "notes.qmd"
 CHUNK = re.compile(r"^```\{python\}\n(.*?)^```", re.MULTILINE | re.DOTALL)
 
 # Values stated in the notes, slides and instructor notes
