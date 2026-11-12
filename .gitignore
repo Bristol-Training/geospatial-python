@@ -9,7 +9,7 @@ __pycache__/
 
 # Quarto build leftovers
 .quarto/
-*_files/
+/*_files/
 **/*.quarto_ipynb
 /.luarc.json
 
