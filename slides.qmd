@@ -942,19 +942,19 @@ Pumps **3** and **6** had no deaths in their catchments
 ::: {.cards .grid2}
 ::: {.card .fragment}
 **Straight lines**
-For some addresses, the Rupert Street pump was closer in a straight line, but dead ends made Broad Street quicker to reach
+For some homes the Rupert Street pump was closer, but dead ends made Broad Street quicker to reach
 :::
 ::: {.card .fragment}
 **The brewery**
-No deaths in the blocks just east of the pump. The brewery had its own well, and the workers drank its beer
+No deaths in the blocks east of the pump. The brewery had its own well, and its workers drank beer
 :::
 ::: {.card .fragment}
 **The Hampstead widow**
-Susannah Eley had Broad Street water delivered to Hampstead every day. She and her niece caught cholera
+Susannah Eley had Broad Street water delivered to Hampstead. She and her niece caught cholera
 :::
 ::: {.card .fragment}
 **The first case**
-Henry Whitehead, a local curate, traced it to a baby at 40 Broad Street. Her mother emptied washing water into a cesspit by the pump
+A curate, Henry Whitehead, traced it to a baby at 40 Broad Street, whose washing water went into a cesspit by the pump
 :::
 :::
 

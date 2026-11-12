@@ -281,7 +281,8 @@ details.how-to-read[open] > summary { margin-bottom: 0.75em; }
 /* room between rows if a flow wraps */
 .reveal .flow { row-gap: 0.8em; }
 /* a flow that must stay on one line, such as a timeline */
-.reveal .flow.one-line { flex-wrap: nowrap; }
+/* the boxes sit in a paragraph, so stop the paragraph wrapping too */
+.reveal .flow.one-line { flex-wrap: nowrap; white-space: nowrap; }
 .reveal .flow.one-line .step { font-size: 0.6em; }
 
 .reveal .good, .reveal .bad { border-radius: 0.3em; padding: 0.3em 0.6em; margin: 0.3em 0; font-size: 0.8em; }
