@@ -219,7 +219,7 @@ Jean Golding Institute
 <li>Feel free to turn your <strong>camera</strong> on if you want to</li>
 <li>We love <strong>questions</strong>! There’s no such thing as a silly question here</li>
 <li>Don’t be afraid of <strong>error messages</strong>: they’re totally normal, and really helpful</li>
-<li>We’ll take a <strong>break</strong> after about 1 hour 20 minutes</li>
+<li>We’ll take a <strong>break</strong> after 1 hour</li>
 <li>If you need an extra break at any point, that’s okay: the session is recorded</li>
 </ul>
 </div>
@@ -542,10 +542,10 @@ Jean Golding Institute
 <li><strong>File → Save a copy in Drive</strong></li>
 <li>Run the first two cells (<strong>Shift + Enter</strong>)</li>
 </ol>
-<div id="ac9d4b57" class="cell" data-execution_count="1">
+<div id="9d1aaf37" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install <span class="op">--</span>quiet <span class="st">"geopandas&gt;=1.0"</span> contextily folium mapclassify</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="49ca3068" class="cell" data-execution_count="2">
+<div id="20efbb58" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
 <span id="cb2-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
 <span id="cb2-3"><a aria-hidden="true" tabindex="-1"></a></span>
@@ -694,7 +694,7 @@ Jean Golding Institute
 <section id="reading-the-data" class="slide level2 demo-slide">
 <h2>Reading the data</h2>
 <p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
-<div id="a3283038" class="cell" data-execution_count="3">
+<div id="342615b1" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb3-2"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a aria-hidden="true" tabindex="-1"></a></span>
@@ -776,7 +776,7 @@ Jean Golding Institute
 </section>
 <section id="set_crs-or-to_crs" class="slide level2">
 <h2>set_crs() or to_crs()?</h2>
-<div id="393a9bca" class="cell" data-execution_count="4">
+<div id="77166ee0" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># Label the data with its CRS: the numbers do not change</span></span>
 <span id="cb4-2"><a aria-hidden="true" tabindex="-1"></a>deaths <span class="op">=</span> deaths.set_crs(<span class="dv">27700</span>, allow_override<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb4-3"><a aria-hidden="true" tabindex="-1"></a>pumps <span class="op">=</span> pumps.set_crs(<span class="dv">27700</span>, allow_override<span class="op">=</span><span class="va">True</span>)</span>
@@ -835,7 +835,7 @@ Jean Golding Institute
 <section id="pump-0-is-the-broad-street-pump" class="slide level2 demo-slide">
 <h2>Pump 0 is the Broad Street pump</h2>
 <p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
-<div id="0977ccb3" class="cell" data-execution_count="5">
+<div id="d1c4801f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a>pumps_latlon <span class="op">=</span> pumps.to_crs(<span class="dv">4326</span>)</span>
 <span id="cb5-2"><a aria-hidden="true" tabindex="-1"></a>pumps_latlon.geometry.y.iloc[<span class="dv">0</span>], pumps_latlon.geometry.x.iloc[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -866,6 +866,25 @@ Jean Golding Institute
 <li><a href="https://epsg.io/">epsg.io</a>: look up any CRS</li>
 </ul>
 </div>
+</section>
+<section id="break" class="slide level2 center">
+<h2>Break</h2>
+<div class="big center">
+<p>10 minutes</p>
+</div>
+<aside class="notes">
+<p>About 1 hour in. Colab may disconnect if left idle: if so, rerun the notebook (Runtime → Run before).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="making-maps" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
@@ -936,7 +955,7 @@ Jean Golding Institute
 <section id="layers" class="slide level2 demo-slide">
 <h2>Layers</h2>
 <p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
-<div id="686fa76f" class="cell" data-execution_count="6">
+<div id="096fdee3" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> deaths.plot(</span>
 <span id="cb6-2"><a aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"black"</span>, markersize<span class="op">=</span>deaths[<span class="st">"Count"</span>] <span class="op">*</span> <span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>)</span>
 <span id="cb6-3"><a aria-hidden="true" tabindex="-1"></a>)</span>
@@ -962,7 +981,7 @@ Jean Golding Institute
 </section>
 <section id="a-background-map" class="slide level2">
 <h2>A background map</h2>
-<div id="582d4f28" class="cell" data-execution_count="7">
+<div id="5fa86281" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">import</span> contextily <span class="im">as</span> cx</span>
 <span id="cb7-2"><a aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> deaths.plot(</span>
@@ -994,7 +1013,7 @@ Jean Golding Institute
 </section>
 <section id="an-interactive-map" class="slide level2">
 <h2>An interactive map</h2>
-<div id="45cd8aed" class="cell" data-execution_count="8">
+<div id="5d46d63c" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" tabindex="-1"></a>deaths.explore(</span>
 <span id="cb8-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"Count"</span>,</span>
 <span id="cb8-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>
@@ -1042,7 +1061,7 @@ Jean Golding Institute
 <section id="the-worst-hit-address" class="slide level2 demo-slide">
 <h2>The worst-hit address</h2>
 <p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
-<div id="a07f2169" class="cell" data-execution_count="9">
+<div id="0cccd4b1" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> deaths.explore(</span>
 <span id="cb9-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"Count"</span>,</span>
 <span id="cb9-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>
@@ -1070,25 +1089,6 @@ Jean Golding Institute
 <li><a href="https://contextily.readthedocs.io/">contextily</a>: background maps</li>
 </ul>
 </div>
-</section>
-<section id="break" class="slide level2 center">
-<h2>Break</h2>
-<div class="big center">
-<p>10 minutes</p>
-</div>
-<aside class="notes">
-<p>About 1 hour 20 minutes in. Colab may disconnect if left idle: if so, rerun the notebook (Runtime → Run before).</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 <section>
 <section id="the-nearest-pump" class="title-slide slide level1 section-divider center" data-background-color="var(--jgi-red)">
@@ -1135,7 +1135,7 @@ Jean Golding Institute
 <section id="joining-by-location" class="slide level2 demo-slide">
 <h2>Joining by location</h2>
 <p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
-<div id="915020ec" class="cell" data-execution_count="10">
+<div id="412bfa67" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>nearest <span class="op">=</span> deaths.sjoin_nearest(pumps, distance_col<span class="op">=</span><span class="st">"distance"</span>)</span>
 <span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a>nearest.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1162,7 +1162,7 @@ Jean Golding Institute
 </section>
 <section id="deaths-per-pump" class="slide level2">
 <h2>Deaths per pump</h2>
-<div id="b795e3e4" class="cell" data-execution_count="11">
+<div id="1f78ec12" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" tabindex="-1"></a>deaths_per_pump <span class="op">=</span> nearest.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
 <span id="cb11-2"><a aria-hidden="true" tabindex="-1"></a>deaths_per_pump.sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1228,7 +1228,7 @@ Jean Golding Institute
 <section id="deaths-within-100-metres-1" class="slide level2 demo-slide">
 <h2>196 deaths within 100 metres</h2>
 <p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
-<div id="9fccff46" class="cell" data-execution_count="12">
+<div id="d3a9d7de" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" tabindex="-1"></a>broad_street <span class="op">=</span> pumps.geometry.iloc[<span class="dv">0</span>]</span>
 <span id="cb12-2"><a aria-hidden="true" tabindex="-1"></a>within_100m <span class="op">=</span> deaths[deaths.distance(broad_street) <span class="op">&lt;=</span> <span class="dv">100</span>]</span>
 <span id="cb12-3"><a aria-hidden="true" tabindex="-1"></a>deaths_near <span class="op">=</span> within_100m[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
@@ -1286,7 +1286,7 @@ Jean Golding Institute
 <section id="voronoi-polygons-in-geopandas" class="slide level2 demo-slide">
 <h2>Voronoi polygons in geopandas</h2>
 <p><span class="demo-tag">Together</span> <span class="demo-meta">live code</span></p>
-<div id="4896f785" class="cell" data-execution_count="13">
+<div id="dde70dfd" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box</span>
 <span id="cb13-2"><a aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a aria-hidden="true" tabindex="-1"></a>all_points <span class="op">=</span> pd.concat([deaths.geometry, pumps.geometry])</span>
@@ -1319,7 +1319,7 @@ Jean Golding Institute
 </section>
 <section id="deaths-in-each-catchment" class="slide level2">
 <h2>Deaths in each catchment</h2>
-<div id="431fc844" class="cell" data-execution_count="14">
+<div id="72af9d0b" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" tabindex="-1"></a>deaths_in_catchment <span class="op">=</span> deaths.sjoin(catchments[[<span class="st">"pump_id"</span>, <span class="st">"geometry"</span>]])</span>
 <span id="cb14-2"><a aria-hidden="true" tabindex="-1"></a>deaths_in_catchment.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1360,7 +1360,7 @@ Jean Golding Institute
 <section id="a-map-of-catchments" class="slide level2 demo-slide">
 <h2>A map of catchments</h2>
 <p><span class="your-turn-tag">Your turn</span> <span class="demo-meta">7 min</span></p>
-<div id="e81adb3b" class="cell" data-execution_count="15">
+<div id="55057b4d" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" tabindex="-1"></a>totals <span class="op">=</span> deaths_in_catchment.groupby(<span class="st">"pump_id"</span>)[<span class="st">"Count"</span>].<span class="bu">sum</span>()</span>
 <span id="cb15-2"><a aria-hidden="true" tabindex="-1"></a>catchments[<span class="st">"deaths"</span>] <span class="op">=</span> catchments[<span class="st">"pump_id"</span>].<span class="bu">map</span>(totals).fillna(<span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1376,7 +1376,7 @@ Jean Golding Institute
 <section id="the-catchment-map" class="slide level2 demo-slide">
 <h2>The catchment map</h2>
 <p><span class="answer-tag">Answer</span> <span class="demo-meta">3 min</span></p>
-<div id="374788bb" class="cell" data-execution_count="16">
+<div id="a160c146" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> catchments.plot(</span>
 <span id="cb16-2"><a aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"deaths"</span>,</span>
 <span id="cb16-3"><a aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Reds"</span>,</span>

@@ -133,8 +133,8 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#introduction-and-the-story-25-min" id="toc-introduction-and-the-story-25-min" class="nav-link" data-scroll-target="#introduction-and-the-story-25-min">Introduction and the story (25 min)</a></li>
   <li><a href="#location-data-35-min" id="toc-location-data-35-min" class="nav-link" data-scroll-target="#location-data-35-min">1. Location data (35 min)</a></li>
-  <li><a href="#making-maps-25-min" id="toc-making-maps-25-min" class="nav-link" data-scroll-target="#making-maps-25-min">2. Making maps (25 min)</a></li>
   <li><a href="#break-10-min" id="toc-break-10-min" class="nav-link" data-scroll-target="#break-10-min">Break (10 min)</a></li>
+  <li><a href="#making-maps-25-min" id="toc-making-maps-25-min" class="nav-link" data-scroll-target="#making-maps-25-min">2. Making maps (25 min)</a></li>
   <li><a href="#the-nearest-pump-30-min" id="toc-the-nearest-pump-30-min" class="nav-link" data-scroll-target="#the-nearest-pump-30-min">3. The nearest pump (30 min)</a></li>
   <li><a href="#pump-catchments-25-min" id="toc-pump-catchments-25-min" class="nav-link" data-scroll-target="#pump-catchments-25-min">4. Pump catchments (25 min)</a></li>
   <li><a href="#what-the-map-cannot-tell-us-20-min" id="toc-what-the-map-cannot-tell-us-20-min" class="nav-link" data-scroll-target="#what-the-map-cannot-tell-us-20-min">5. What the map cannot tell us (20 min)</a></li>
@@ -210,20 +210,20 @@ ul.task-list li input[type="checkbox"] {
 <td>Where is pump 0?</td>
 </tr>
 <tr class="odd">
-<td>2</td>
-<td>Making maps</td>
-<td>25</td>
-<td>3</td>
-<td>What makes a good map, visual variables</td>
-<td>An interactive map</td>
-</tr>
-<tr class="even">
 <td></td>
 <td>Break</td>
 <td>10</td>
 <td></td>
 <td></td>
 <td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Making maps</td>
+<td>25</td>
+<td>3</td>
+<td>What makes a good map, visual variables</td>
+<td>An interactive map</td>
 </tr>
 <tr class="odd">
 <td>3</td>
@@ -381,6 +381,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><strong>Watch out for:</strong> latitude and longitude swapped in the web map (they land in the Indian Ocean). People expecting the pumps to have names: the file has none, which is why we add <code>pump_id</code>.</p>
 </section>
+<section id="break-10-min" class="level1">
+<h1>Break (10 min)</h1>
+<p>About 1 hour in. Colab can disconnect if left idle. If it does, attendees click <strong>Runtime → Run before</strong> in the first cell of section 2, or rerun the notebook from the top.</p>
+</section>
 <section id="making-maps-25-min" class="level1">
 <h1>2. Making maps (25 min)</h1>
 <p><strong>Theory:</strong> what makes a good map (data, context, key, credit); visual variables (size, colour, shape), compared with Snow’s map.</p>
@@ -400,10 +404,6 @@ ul.task-list li input[type="checkbox"] {
 <li>If time, show Snow’s original map as the background (the optional extra in the notes). It is a raster, which links back to section 1.</li>
 </ul>
 <p><strong>Watch out for:</strong> a background map in the wrong place, usually because <code>crs=deaths.crs</code> is missing. People trying other <code>cx.providers</code>: OpenStreetMap’s own tiles return “Access blocked” images to contextily, and CartoDB now needs an API key.</p>
-</section>
-<section id="break-10-min" class="level1">
-<h1>Break (10 min)</h1>
-<p>About 1 hour 20 minutes in. Colab can disconnect if left idle. If it does, attendees click <strong>Runtime → Run before</strong> in the first cell of section 3, or rerun the notebook from the top.</p>
 </section>
 <section id="the-nearest-pump-30-min" class="level1">
 <h1>3. The nearest pump (30 min)</h1>

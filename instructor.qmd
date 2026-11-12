@@ -12,8 +12,8 @@ number-sections: false
 |---|---|---|---|---|---|
 | | Introduction and the story | 25 | | Cholera, miasma vs water, Snow's map | Setup |
 | 1 | Location data | 35 | 1, 2 | Geospatial data, Tobler's law, vector vs raster, CRSs | Where is pump 0? |
-| 2 | Making maps | 25 | 3 | What makes a good map, visual variables | An interactive map |
 | | Break | 10 | | | |
+| 2 | Making maps | 25 | 3 | What makes a good map, visual variables | An interactive map |
 | 3 | The nearest pump | 30 | 4 | Spatial relationships, spatial joins | Deaths within 100 metres |
 | 4 | Pump catchments | 25 | 5 | Voronoi polygons, Snow's own one, choropleths | A map of catchments |
 | 5 | What the map cannot tell us | 20 | 6 | The evidence beyond the map, the MAUP | Question the map |
@@ -104,6 +104,10 @@ For checking attendees' answers. `tests/check_notes.py` recalculates them from t
 
 **Watch out for:** latitude and longitude swapped in the web map (they land in the Indian Ocean). People expecting the pumps to have names: the file has none, which is why we add `pump_id`.
 
+# Break (10 min)
+
+About 1 hour in. Colab can disconnect if left idle. If it does, attendees click **Runtime → Run before** in the first cell of section 2, or rerun the notebook from the top.
+
 # 2. Making maps (25 min)
 
 **Theory:** what makes a good map (data, context, key, credit); visual variables (size, colour, shape), compared with Snow's map.
@@ -127,10 +131,6 @@ For checking attendees' answers. `tests/check_notes.py` recalculates them from t
 - If time, show Snow's original map as the background (the optional extra in the notes). It is a raster, which links back to section 1.
 
 **Watch out for:** a background map in the wrong place, usually because `crs=deaths.crs` is missing. People trying other `cx.providers`: OpenStreetMap's own tiles return "Access blocked" images to contextily, and CartoDB now needs an API key.
-
-# Break (10 min)
-
-About 1 hour 20 minutes in. Colab can disconnect if left idle. If it does, attendees click **Runtime → Run before** in the first cell of section 3, or rerun the notebook from the top.
 
 # 3. The nearest pump (30 min)
 

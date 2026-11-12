@@ -68,8 +68,8 @@ By the end of this course, you will be able to:
 |---|---|---|
 | | Introduction and the story | 25 min |
 | 1 | Location data | 35 min |
-| 2 | Making maps | 25 min |
 | | Break | 10 min |
+| 2 | Making maps | 25 min |
 | 3 | The nearest pump | 30 min |
 | 4 | Pump catchments | 25 min |
 | 5 | What the map cannot tell us | 20 min |

@@ -21,7 +21,7 @@ execute:
 - Feel free to turn your **camera** on if you want to
 - We love **questions**! There's no such thing as a silly question here
 - Don't be afraid of **error messages**: they're totally normal, and really helpful
-- We'll take a **break** after about 1 hour 20 minutes
+- We'll take a **break** after 1 hour
 - If you need an extra break at any point, that's okay: the session is recorded
 :::
 
@@ -520,6 +520,16 @@ A replica pump stands on Broadwick Street today. From now on, pump 0 is "Broad S
 - [epsg.io](https://epsg.io/): look up any CRS
 :::
 
+## Break {.center}
+
+::: {.big .center}
+10 minutes
+:::
+
+::: notes
+About 1 hour in. Colab may disconnect if left idle: if so, rerun the notebook (Runtime → Run before).
+:::
+
 # [02]{.section-number} Making maps {.section-divider background-color="var(--jgi-red)"}
 
 [How do we turn a table of points into a map that people can read?]{.section-question}
@@ -674,16 +684,6 @@ worst["geometry"].distance(pumps.geometry.iloc[0])
 - [GeoPandas: mapping and plotting](https://geopandas.org/en/stable/docs/user_guide/mapping.html)
 - [GeoPandas: interactive maps](https://geopandas.org/en/stable/docs/user_guide/interactive_mapping.html)
 - [contextily](https://contextily.readthedocs.io/): background maps
-:::
-
-## Break {.center}
-
-::: {.big .center}
-10 minutes
-:::
-
-::: notes
-About 1 hour 20 minutes in. Colab may disconnect if left idle: if so, rerun the notebook (Runtime → Run before).
 :::
 
 # [03]{.section-number} The nearest pump {.section-divider background-color="var(--jgi-red)"}
