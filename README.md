@@ -23,7 +23,7 @@ The course takes three hours and runs in Google Colab, so attendees need a Googl
 | `assets/` | Logo and pictures. `assets/make_diagrams.py` draws the diagrams in `assets/diagrams/` |
 | `_quarto.yml`, `custom.scss`, `_brand.yml` | Site settings, styles and branding |
 | `pyproject.toml`, `uv.lock` | The Python packages needed to render the course |
-| `.github/` | The GitHub Action that renders the website and publishes it to the `gh-pages` branch on every push to `main` |
+| `docs/` | The rendered website, published by GitHub Pages |
 
 ## Teaching the course
 
@@ -42,7 +42,7 @@ uv run quarto preview
 ```
 
 - `tests/check_notes.py` runs the code in the notes and checks the numbers quoted in the materials. To run the same checks in Google Colab, run `uv run python tests/check_notes.py --notebook`, upload `tests/colab_check.ipynb` to Colab and click **Runtime → Run all**.
-- `quarto preview` opens the course in your browser and reloads it whenever you save a `.qmd` file. The rendered site goes in `docs/`, which isn't committed.
+- `quarto preview` opens the course in your browser and reloads it whenever you save a `.qmd` file. The rendered site goes in `docs/`.
 - To redraw the diagrams, run `uv run python assets/make_diagrams.py`.
 
 Both the checks and the preview download the data, so you need an internet connection.
@@ -53,9 +53,16 @@ The course uses Robin Wilson's digitised version of John Snow's map, from <https
 
 ## Publishing
 
-The website is published automatically. Every push to `main` runs the GitHub Action in `.github/workflows/publish.yml`, which installs the packages in `uv.lock`, renders the site and pushes it to the `gh-pages` branch. GitHub Pages serves the site from that branch. You can also run the Action by hand from the **Actions** tab.
+GitHub Pages publishes the `docs/` folder on `main`. After changing the materials, render the site and commit `docs/`:
 
-Code chunks are *frozen* (`freeze: auto` in `_quarto.yml`): their results are saved, and a page's code only runs again when that page changes. The Action keeps the saved results in its cache, so you don't need to render locally before pushing.
+```bash
+uv run quarto render
+git add -A
+git commit -m "Update materials"
+git push
+```
+
+GitHub Pages settings (**Settings → Pages**): **Deploy from a branch**, branch `main`, folder `/docs`.
 
 To add a Python package, run `uv add <package>` and commit the changed `pyproject.toml` and `uv.lock`.
 
@@ -74,7 +81,7 @@ Corrections and suggestions are welcome.
 3. Edit the `.qmd` files and check the result with `quarto preview`.
 4. Commit and push your branch, then open a pull request on GitHub describing what you changed and why.
 
-Commit only the source files: the `.qmd` files and any new images in `assets/`. Don't commit `docs/`: it's ignored by git, and the website is rebuilt automatically after merging.
+Commit only the source files: the `.qmd` files and any new images in `assets/`, not `docs/`. The maintainer re-renders the website after merging.
 
 ## Credits
 

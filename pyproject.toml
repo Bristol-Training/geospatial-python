@@ -17,5 +17,5 @@ dependencies = [
 ]
 
 [dependency-groups]
-# Quarto, for rendering locally. The GitHub Action installs its own.
+# Quarto, for rendering the course.
 dev = ["quarto-cli"]

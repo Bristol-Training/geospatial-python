@@ -13,10 +13,7 @@ __pycache__/
 **/*.quarto_ipynb
 /.luarc.json
 
-# Built by the GitHub Action (.github/workflows/publish.yml), so not committed.
-# _freeze/ holds frozen code results; the Action keeps its own copy in its cache.
-/docs/
-/_site/
+# Frozen code results: only needed locally
 /_freeze/
 
 # Data downloaded when the notes are rendered (not redistributed)
